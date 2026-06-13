@@ -1,0 +1,71 @@
+<view class="vip-page">
+  <view class="vip-header">
+    <view class="header-bg"></view>
+    <view class="vip-card card">
+      <view class="vip-icon">
+        <van-icon name="vip-card" size="80rpx" color="#B9A385"/>
+      </view>
+      <view class="vip-title">会员专享权益</view>
+      <view class="vip-desc">成为会员，享受更多优惠</view>
+    </view>
+  </view>
+
+  <view class="benefit-section card">
+    <view class="section-title">
+      <van-icon name="gift" size="40rpx" color="#D6543A"/>
+      会员专属优惠
+    </view>
+    <view class="benefit-item">
+      <view class="benefit-tag">
+        <van-tag type="danger" size="large">立减</van-tag>
+      </view>
+      <view class="benefit-content">
+        <view class="benefit-name">下单立减3元</view>
+        <view class="benefit-desc">所有商品会员价基础上再减3元</view>
+      </view>
+    </view>
+    <view class="benefit-item">
+      <view class="benefit-tag">
+        <van-tag type="success" size="large">包邮</van-tag>
+      </view>
+      <view class="benefit-content">
+        <view class="benefit-name">全店包邮</view>
+        <view class="benefit-desc">会员订单全部包邮，快递到家</view>
+      </view>
+    </view>
+    <view class="benefit-item">
+      <view class="benefit-tag">
+        <van-tag type="warning" size="large">积分</van-tag>
+      </view>
+      <view class="benefit-content">
+        <view class="benefit-name">双倍积分</view>
+        <view class="benefit-desc">消费可获双倍积分，积分可抵扣现金</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="rules-section card">
+    <view class="section-title">
+      <van-icon name="info-o" size="40rpx" color="#7CBD89"/>
+      使用规则
+    </view>
+    <view class="rule-item">
+      <view class="rule-num">1</view>
+      <view class="rule-text">会员优惠可在结算时自动抵扣，无需额外操作</view>
+    </view>
+    <view class="rule-item">
+      <view class="rule-num">2</view>
+      <view class="rule-text">会员立减优惠每位用户每单仅限使用一次</view>
+    </view>
+    <view class="rule-item">
+      <view class="rule-num">3</view>
+      <view class="rule-text">会员优惠不可与其他促销活动叠加使用</view>
+    </view>
+    <view class="rule-item">
+      <view class="rule-num">4</view>
+      <view class="rule-text">如有疑问，请联系客服咨询</view>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>

@@ -1,0 +1,87 @@
+<view class="cart-page">
+  <view class="cart-header">
+    <view class="header-title">购物车</view>
+    <view class="header-action" bindtap="clearCart" wx:if="{{cartList.length > 0}}">清空</view>
+  </view>
+
+  <view class="cart-empty" wx:if="{{cartList.length === 0 && !loading}}">
+    <van-empty description="购物车是空的" image="https://img.yzcdn.cn/vant/empty-cart.png">
+      <van-button round type="primary" size="large" bindclick="goShopping">去逛逛</van-button>
+    </van-empty>
+  </view>
+
+  <view class="cart-list" wx:if="{{cartList.length > 0}}">
+    <view class="cart-item card" wx:for="{{cartList}}" wx:key="index">
+      <view class="checkbox-wrap" catchtap="onCheckboxTap" data-index="{{index}}">
+        <van-icon name="{{item.selected ? 'checked' : 'circle'}}" size="40rpx" color="{{item.selected ? '#7CBD89' : '#CCCCCC'}}"/>
+      </view>
+      <view class="item-info">
+        <van-image width="180rpx" height="180rpx" src="{{item.image}}" fit="cover" radius="12rpx"/>
+        <view class="item-detail">
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-spec">{{item.sku_name}}</view>
+          <view class="item-bottom">
+            <view class="item-price">¥{{item.price || 0}}</view>
+            <van-stepper value="{{item.num}}" min="1" max="99" bind:change="onNumChange" data-id="{{item.id}}"/>
+          </view>
+        </view>
+      </view>
+      <view class="item-delete" catchtap="deleteItem" data-id="{{item.id}}">
+        <van-icon name="delete-o" size="40rpx" color="#D6543A"/>
+      </view>
+    </view>
+  </view>
+
+  <view class="cart-bottom" wx:if="{{cartList.length > 0}}">
+    <view class="bottom-main">
+      <view class="select-all" bindtap="toggleSelectAll">
+        <van-icon name="{{isAllSelected ? 'checked' : 'circle'}}" size="40rpx" color="{{isAllSelected ? '#7CBD89' : '#CCCCCC'}}"/>
+        <text>全选</text>
+      </view>
+      <view class="total-price">
+        合计：<text class="price-num">¥{{totalPrice}}</text>
+      </view>
+      <view class="settle-btn {{selectedIds.length === 0 ? 'disabled' : ''}}" bindtap="settle">
+        去结算
+      </view>
+    </view>
+  </view>
+
+  <view class="recommend-section" wx:if="{{cartList.length === 0 && recommendList.length > 0}}">
+    <view class="recommend-header">
+      <view class="header-line"></view>
+      <view class="header-title">
+        <van-icon name="fire-o" size="36rpx" color="#D6543A"/>
+        <text>猜你喜欢</text>
+      </view>
+      <view class="header-line"></view>
+    </view>
+    <view class="recommend-grid">
+      <view class="recommend-item" wx:for="{{recommendList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="item-image-wrap">
+          <van-image width="100%" height="320rpx" src="{{item.image}}" fit="cover" radius="16rpx 16rpx 0 0"/>
+          <view class="item-tag" wx:if="{{item.is_recommend}}">推荐</view>
+        </view>
+        <view class="item-info">
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-desc">{{item.description}}</view>
+          <view class="item-bottom">
+            <view class="item-price-row">
+              <text class="current-price">¥{{item.price}}</text>
+              <text class="original-price" wx:if="{{item.original_price}}">¥{{item.original_price}}</text>
+            </view>
+            <view class="add-btn" catchtap="addToCart" data-item="{{item}}">
+              <van-icon name="plus" size="24rpx" color="#fff"/>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-wrap" wx:if="{{loading && cartList.length === 0}}">
+    <van-loading type="spinner">加载中...</van-loading>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>

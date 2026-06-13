@@ -1,0 +1,34 @@
+<view class="address-page">
+  <view class="address-list">
+    <view class="address-item card" wx:for="{{addresses}}" wx:key="id">
+      <view class="item-main" bindtap="selectAddress" data-id="{{item.id}}">
+        <view class="item-top">
+          <view class="item-user">{{item.name}} {{item.phone}}</view>
+          <van-tag type="success" wx:if="{{item.is_default === 1}}">默认</van-tag>
+        </view>
+        <view class="item-address">{{item.region}}{{item.detail}}</view>
+      </view>
+      <view class="item-actions">
+        <view class="action-edit" bindtap="editAddress" data-id="{{item.id}}">
+          <van-icon name="edit-o" size="36rpx"/>
+          <text>编辑</text>
+        </view>
+        <view class="action-delete" bindtap="deleteAddress" data-id="{{item.id}}">
+          <van-icon name="delete-o" size="36rpx"/>
+          <text>删除</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="address-empty" wx:if="{{addresses.length === 0}}">
+      <van-empty description="暂无地址" image="https://img.yzcdn.cn/vant/empty-address.png"/>
+    </view>
+  </view>
+
+  <view class="add-btn-wrap">
+    <view class="add-btn" bindtap="addAddress">
+      <van-icon name="plus" size="40rpx" color="#fff"/>
+      <text>新增地址</text>
+    </view>
+  </view>
+</view>

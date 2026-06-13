@@ -1,0 +1,52 @@
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(env(safe-area-inset-bottom) + 100rpx);
+
+  background: #fff;
+  display: flex;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  z-index: 999;
+}
+
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding-top: 16rpx;
+}
+
+.tab-icon {
+  position: relative;
+  margin-bottom: 8rpx;
+}
+
+.tab-text {
+  font-size: 22rpx;
+  color: #6C6C6C;
+}
+
+.tab-text.active {
+  color: #7CBD89;
+  font-weight: 500;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -10rpx;
+  right: -20rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  text-align: center;
+  font-size: 18rpx;
+  color: #fff;
+  background: #D6543A;
+  border-radius: 16rpx;
+  padding: 0 8rpx;
+}

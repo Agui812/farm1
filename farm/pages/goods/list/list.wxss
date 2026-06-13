@@ -1,0 +1,100 @@
+.goods-list-page {
+  background-color: #F9F6F0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-bar {
+  background: #fff;
+  padding: 16rpx 24rpx;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.category-tabs {
+  background: #fff;
+  margin-bottom: 16rpx;
+}
+
+.goods-scroll {
+  flex: 1;
+  height: calc(100vh - 200rpx - env(safe-area-inset-bottom));
+}
+
+.goods-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 16rpx;
+  gap: 16rpx;
+}
+
+.goods-card {
+  width: calc(50% - 8rpx);
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.goods-info {
+  padding: 20rpx;
+}
+
+.goods-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #3C3C3C;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.goods-desc {
+  font-size: 22rpx;
+  color: #9C9C9C;
+  margin-bottom: 12rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.goods-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.goods-price {
+  display: flex;
+  align-items: center;
+}
+
+.price-symbol {
+  font-size: 24rpx;
+  color: #D6543A;
+}
+
+.price-value {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #D6543A;
+}
+
+.loading-tip {
+  text-align: center;
+  padding: 32rpx;
+}
+
+.no-more {
+  text-align: center;
+  padding: 32rpx;
+  font-size: 24rpx;
+  color: #9C9C9C;
+}
+
+.bottom-safe {
+  height: calc(100rpx + env(safe-area-inset-bottom));
+}

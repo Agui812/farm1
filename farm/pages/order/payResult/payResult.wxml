@@ -1,0 +1,44 @@
+<view class="pay-result-page">
+  <view class="result-icon {{status === 'success' ? 'success' : 'fail'}}">
+    <van-icon name="{{status === 'success' ? 'passed' : 'close'}}" size="120rpx" color="#fff"/>
+  </view>
+  <view class="result-title" wx:if="{{isPointExchange}}">兑换成功</view>
+  <view class="result-title" wx:else>{{status === 'success' ? '支付成功' : '支付失败'}}</view>
+  <view class="result-desc" wx:if="{{isPointExchange}}">感谢您的兑换</view>
+  <view class="result-desc" wx:else>{{status === 'success' ? '感谢您的购买' : '请重新支付'}}</view>
+
+  <view class="order-info card" wx:if="{{!isPointExchange && orderId}}">
+    <view class="info-row">
+      <text class="info-label">订单号</text>
+      <text class="info-value">{{orderNo}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">支付金额</text>
+      <text class="info-value price">¥{{orderInfo.totalPrice}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">下单时间</text>
+      <text class="info-value">{{orderInfo.createTime}}</text>
+    </view>
+  </view>
+
+  <view class="order-info card" wx:if="{{isPointExchange}}">
+    <view class="info-row">
+      <text class="info-label">订单号</text>
+      <text class="info-value">{{orderNo}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">兑换商品</text>
+      <text class="info-value">{{goodsName}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">状态</text>
+      <text class="info-value">待发货</text>
+    </view>
+  </view>
+
+  <view class="action-btns">
+    <van-button round size="large" custom-class="btn-view" bindclick="viewOrder" wx:if="{{orderId}}">查看订单</van-button>
+    <van-button round size="large" custom-class="btn-home" bindclick="goHome">返回首页</van-button>
+  </view>
+</view>

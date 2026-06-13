@@ -1,0 +1,59 @@
+<view class="contact-page">
+  <view class="farm-card card">
+    <view class="farm-header">
+      <van-image width="120rpx" height="120rpx" round src="https://img.yzcdn.cn/vant/cat.jpeg" fit="cover"/>
+      <view class="farm-info">
+        <view class="farm-name">艾萌农场</view>
+        <view class="farm-slogan">农户直供 · 新鲜放心</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-section">
+    <view class="info-item card" bindtap="callPhone">
+      <view class="info-icon phone">
+        <van-icon name="phone-o" size="48rpx" color="#fff"/>
+      </view>
+      <view class="info-content">
+        <view class="info-label">联系电话</view>
+        <view class="info-value">138-8888-8888</view>
+      </view>
+      <van-icon name="arrow" size="36rpx" color="#BDBDBD"/>
+    </view>
+
+    <view class="info-item card" bindtap="copyWechat">
+      <view class="info-icon wechat">
+        <van-icon name="chat-o" size="48rpx" color="#fff"/>
+      </view>
+      <view class="info-content">
+        <view class="info-label">微信号</view>
+        <view class="info-value">aimengnongchang</view>
+      </view>
+      <van-icon name="arrow" size="36rpx" color="#BDBDBD"/>
+    </view>
+
+    <view class="info-item card" bindtap="openMap">
+      <view class="info-icon location">
+        <van-icon name="location-o" size="48rpx" color="#fff"/>
+      </view>
+      <view class="info-content">
+        <view class="info-label">农场地址</view>
+        <view class="info-value">黑龙江省五常市营城子乡</view>
+      </view>
+      <van-icon name="arrow" size="36rpx" color="#BDBDBD"/>
+    </view>
+  </view>
+
+  <view class="action-section">
+    <view class="action-row">
+      <van-button round size="large" type="primary" custom-class="btn-call" bindclick="callPhone">
+        <van-icon name="phone-o" size="40rpx"/>
+        一键拨号
+      </van-button>
+      <van-button round size="large" type="default" custom-class="btn-copy" bindclick="copyWechat">
+        <van-icon name="chat-o" size="40rpx"/>
+        复制微信
+      </van-button>
+    </view>
+  </view>
+</view>

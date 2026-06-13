@@ -1,0 +1,107 @@
+<view class="goods-detail-page">
+  <swiper indicator-dots autoplay circular class="detail-swiper" wx:if="{{images.length > 0}}">
+    <block wx:for="{{images}}" wx:key="index">
+      <swiper-item>
+        <van-image width="100%" height="750rpx" src="{{item}}" fit="cover"/>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <view class="goods-main card">
+    <view class="goods-price-row">
+      <view class="goods-price">
+        <text class="price-symbol">¥</text>
+        <text class="price-value">{{minPrice > 0 ? minPrice : goods.price}}</text>
+        <van-tag type="danger" wx:if="{{goods.original_price > goods.price}}">立省{{goods.original_price - goods.price}}元</van-tag>
+      </view>
+      <view class="goods-original-price" wx:if="{{goods.original_price > goods.price}}">
+        原价 ¥{{goods.original_price}}
+      </view>
+    </view>
+    <view class="goods-name">{{goods.name}}</view>
+    <view class="goods-spec-row" wx:if="{{skuList.length > 0}}">
+      <text class="spec-label">选择规格：</text>
+      <view class="spec-list">
+        <view 
+          class="spec-item {{selectedSkuId === item.id ? 'active' : ''}}" 
+          wx:for="{{skuList}}" 
+          wx:key="id"
+          bindtap="selectSku" 
+          data-id="{{item.id}}"
+        >
+          {{item.name}} ¥{{item.price}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="goods-desc card">
+    <view class="section-title">产品说明</view>
+    <view class="desc-text">{{goods.desc}}</view>
+  </view>
+
+  <view class="bottom-safe"></view>
+
+  <view class="bottom-bar">
+    <view class="bar-left">
+      <view class="bar-icon" bindtap="goToCart">
+        <van-icon name="shopping-cart-o" size="40rpx" color="#5BA86D"/>
+        <view class="cart-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</view>
+      </view>
+      <view class="bar-icon" bindtap="goToContact">
+        <van-icon name="service-o" size="40rpx" color="#5BA86D"/>
+      </view>
+    </view>
+    <view class="bar-right">
+      <van-button type="default" size="large" round custom-class="btn-cart" bindclick="showSkuPopup" data-type="cart">加入购物车</van-button>
+      <van-button type="primary" size="large" round custom-class="btn-buy" bindclick="showSkuPopup" data-type="buy">立即购买</van-button>
+    </view>
+  </view>
+
+  <van-popup show="{{ showSkuPopup }}" round position="bottom" bind:close="closeSkuPopup">
+    <view class="sku-popup">
+      <view class="sku-header">
+        <van-image width="180rpx" height="180rpx" src="{{goods.image}}" fit="cover" radius="16rpx"/>
+        <view class="sku-info">
+          <view class="sku-name">{{goods.name}}</view>
+          <view class="sku-price">¥{{selectedSkuPrice > 0 ? selectedSkuPrice : goods.price}}</view>
+          <view class="sku-stock">库存：{{selectedSkuStock}}件</view>
+        </view>
+        <view class="sku-close" bindtap="closeSkuPopup">
+          <van-icon name="cross" size="40rpx" color="#BDBDBD"/>
+        </view>
+      </view>
+
+      <view class="sku-specs" wx:if="{{skuList.length > 0}}">
+        <view class="spec-group">
+          <view class="spec-title">选择规格</view>
+          <view class="spec-options">
+            <view 
+              class="spec-option {{selectedSkuId === item.id ? 'active' : ''}}" 
+              wx:for="{{skuList}}" 
+              wx:key="id"
+              bindtap="selectSku" 
+              data-id="{{item.id}}"
+            >
+              {{item.name}}
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="sku-num">
+        <view class="num-label">数量</view>
+        <van-stepper value="{{ buyNum }}" min="1" max="{{selectedSkuStock}}" bind:change="onNumChange"/>
+      </view>
+
+      <view class="sku-actions">
+        <van-button wx:if="{{popupType === 'cart'}}" type="primary" block round custom-class="btn-primary" bindclick="confirmAddCart">
+          确定加入
+        </van-button>
+        <van-button wx:if="{{popupType === 'buy'}}" type="primary" block round custom-class="btn-buy" bindclick="confirmBuyNow">
+          立即购买
+        </van-button>
+      </view>
+    </view>
+  </van-popup>
+</view>

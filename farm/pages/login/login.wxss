@@ -1,0 +1,85 @@
+.login-page {
+  height: 100vh;
+  background: linear-gradient(180deg, #F9F6F0 0%, #fff 100%);
+  box-sizing: border-box;
+}
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 60rpx 40rpx;
+}
+
+.logo-wrap {
+  margin-bottom: 12rpx;
+}
+
+.app-name {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.app-desc {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.login-content {
+  padding: 0 60rpx;
+}
+
+.login-tips {
+  margin-bottom: 60rpx;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.tip-item text {
+  font-size: 30rpx;
+  color: #666;
+}
+
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 60rpx;
+}
+
+.wechat-login-btn {
+  width: 80%;
+  height: 96rpx;
+  font-size: 34rpx;
+  background: linear-gradient(135deg, #7CBD89 0%, #5BA86D 100%) !important;
+  border: none !important;
+  border-radius: 48rpx !important;
+  color: #fff !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.wechat-login-btn::after {
+  border: none !important;
+}
+
+.login-note {
+  margin-top: 30rpx;
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+}
+
+.login-note .link {
+  color: #7CBD89;
+}

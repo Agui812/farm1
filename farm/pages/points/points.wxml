@@ -1,0 +1,76 @@
+<view class="points-page">
+  <view class="points-header">
+    <view class="points-balance">
+      <text class="balance-label">我的积分</text>
+      <text class="balance-value">{{ points }}</text>
+    </view>
+    <view class="sign-btn-wrap">
+      <van-button round size="small" type="warning" bindtap="handleSignIn" loading="{{ signing }}" wx:if="{{ !hasSignedToday }}">
+        每日签到
+      </van-button>
+      <van-tag type="success" wx:else>今日已签到</van-tag>
+    </view>
+  </view>
+
+  <view class="points-rule card">
+    <view class="rule-title">积分规则</view>
+    <view class="rule-item">
+      <van-icon name="todo-list-o" size="36rpx" color="#7CBD89"/>
+      <text>每日签到获得10积分（会员20积分）</text>
+    </view>
+    <view class="rule-item">
+      <van-icon name="shopping-cart-o" size="36rpx" color="#7CBD89"/>
+      <text>每消费1元获得10积分</text>
+    </view>
+    <view class="rule-item">
+      <van-icon name="vip-card-o" size="36rpx" color="#B9A385"/>
+      <text>会员消费按原价双倍获得积分</text>
+    </view>
+  </view>
+
+  <view class="history-section">
+    <view class="section-header">
+      <view class="section-title">积分明细</view>
+    </view>
+    <view class="history-list" wx:if="{{pointsHistory.length > 0}}">
+      <view class="history-item" wx:for="{{pointsHistory}}" wx:key="id">
+        <view class="history-info">
+          <text class="history-type">{{item.remark || item.type_text}}</text>
+          <text class="history-time">{{item.create_time}}</text>
+        </view>
+        <text class="history-points {{item.points > 0 ? 'positive' : 'negative'}}">
+          {{item.points > 0 ? '+' : ''}}{{item.points}}
+        </text>
+      </view>
+    </view>
+    <view class="history-empty" wx:else>
+      <text>暂无积分记录</text>
+    </view>
+  </view>
+
+  <view class="exchange-section">
+    <view class="section-header">
+      <view class="section-title">积分兑换</view>
+    </view>
+    <view class="goods-list">
+      <view class="goods-item card" wx:for="{{exchangeGoods}}" wx:key="id">
+        <van-image width="160rpx" height="160rpx" src="{{item.image}}" fit="cover" radius="16rpx"/>
+        <view class="goods-content">
+          <view class="goods-name">{{item.name}}</view>
+          <view class="goods-stock" wx:if="{{item.stock !== undefined}}">库存: {{item.stock}}</view>
+          <view class="goods-bottom">
+            <view class="goods-points">
+              <van-icon name="points" size="28rpx" color="#FF6034"/>
+              <text>{{item.points}} 积分</text>
+            </view>
+            <van-button round size="small" type="warning" bindtap="handleExchange" data-id="{{item.id}}">
+              兑换
+            </van-button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>

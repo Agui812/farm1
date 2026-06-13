@@ -1,0 +1,10 @@
+<view class="tab-bar">
+  <view class="tab-bar-item" wx:for="{{list}}" wx:key="index" bindtap="switchTab" data-index="{{index}}" data-path="{{item.pagePath}}">
+    <view class="tab-icon">
+      <van-icon wx:if="{{selected === index}}" name="{{item.selectedIconPath}}" size="48rpx" color="#7CBD89"/>
+      <van-icon wx:else name="{{item.iconPath}}" size="48rpx" color="#6C6C6C"/>
+    </view>
+    <view class="tab-text {{selected === index ? 'active' : ''}}">{{item.text}}</view>
+    <view class="cart-badge" wx:if="{{index === 1 && cartCount > 0}}">{{cartCount > 99 ? '99+' : cartCount}}</view>
+  </view>
+</view>

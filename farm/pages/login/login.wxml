@@ -1,0 +1,54 @@
+<scroll-view class="login-page" scroll-y>
+  <view class="login-header" style="
+    margin-top: 100px;
+">
+    <view class="logo-wrap">
+      <van-image
+        width="120rpx"
+        height="120rpx"
+        round
+        src="https://img.yzcdn.cn/vant/cat.jpeg"
+        fit="cover"
+      />
+    </view>
+    <view class="app-name">艾萌农场</view>
+    <view class="app-desc">农户直供 · 新鲜放心</view>
+  </view>
+
+  <view class="login-content" >
+    <view class="login-tips" style="
+    margin-left: 75px;
+">
+      <view class="tip-item">
+        <van-icon name="checked" size="28rpx" color="#7CBD89"/>
+        <text>农户直供，品质保证</text>
+      </view>
+      <view class="tip-item">
+        <van-icon name="checked" size="28rpx" color="#7CBD89"/>
+        <text>新鲜直达，健康美味</text>
+      </view>
+      <view class="tip-item">
+        <van-icon name="checked" size="28rpx" color="#7CBD89"/>
+        <text>积分兑换，更多优惠</text>
+      </view>
+    </view>
+
+    <view class="login-actions">
+      <button
+        class="wechat-login-btn"
+        bindtap="handleWechatLogin"
+        loading="{{ logging }}"
+      >
+        <van-icon name="wechat" size="32rpx" style="margin-right: 10rpx;"/>
+        微信一键登录
+      </button>
+
+      <view class="login-note">
+        登录即代表您同意
+        <text class="link">《用户协议》</text>
+        和
+        <text class="link">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+</scroll-view>

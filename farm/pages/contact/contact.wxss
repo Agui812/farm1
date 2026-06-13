@@ -1,0 +1,110 @@
+.contact-page {
+  background-color: #F9F6F0;
+  min-height: 100vh;
+  padding: 30rpx;
+}
+
+.farm-card {
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+}
+
+.farm-header {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.farm-info {
+  flex: 1;
+}
+
+.farm-name {
+  font-size: 38rpx;
+  font-weight: 600;
+  color: #5BA86D;
+  margin-bottom: 8rpx;
+}
+
+.farm-slogan {
+  font-size: 26rpx;
+  color: #9C9C9C;
+}
+
+.info-section {
+  margin-bottom: 40rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.info-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+}
+
+.info-icon.phone {
+  background: linear-gradient(135deg, #7CBD89 0%, #5BA86D 100%);
+}
+
+.info-icon.wechat {
+  background: linear-gradient(135deg, #B9A385 0%, #A68B6A 100%);
+}
+
+.info-icon.location {
+  background: linear-gradient(135deg, #D6543A 0%, #C44430 100%);
+}
+
+.info-content {
+  flex: 1;
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #9C9C9C;
+  margin-bottom: 8rpx;
+}
+
+.info-value {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #3C3C3C;
+}
+
+.action-section {
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 0 30rpx 30rpx;
+}
+
+.action-row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-row .btn-call,
+.action-row .btn-copy {
+  flex: 1;
+  height: 100rpx;
+  line-height: 100rpx;
+  font-size: 32rpx;
+  border: none;
+}
+
+.action-row .btn-call {
+  background: linear-gradient(135deg, #7CBD89 0%, #5BA86D 100%);
+}
+
+.action-row .btn-copy {
+  background: #F5F5F5;
+  color: #6C6C6C;
+}

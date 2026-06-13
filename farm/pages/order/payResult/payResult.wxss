@@ -1,0 +1,100 @@
+.pay-result-page {
+  background-color: #F9F6F0;
+  min-height: 100vh;
+  padding: 80rpx 30rpx;
+}
+
+.result-icon {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 40rpx;
+}
+
+.result-icon.success {
+  background: linear-gradient(135deg, #7CBD89 0%, #5BA86D 100%);
+}
+
+.result-icon.fail {
+  background: linear-gradient(135deg, #D6543A 0%, #C44430 100%);
+}
+
+.result-title {
+  font-size: 44rpx;
+  font-weight: 600;
+  color: #3C3C3C;
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.result-desc {
+  font-size: 28rpx;
+  color: #9C9C9C;
+  text-align: center;
+  margin-bottom: 60rpx;
+}
+
+.order-info {
+  margin-bottom: 60rpx;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+}
+
+.info-row:not(:last-child) {
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #6C6C6C;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #3C3C3C;
+}
+
+.info-value.price {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #D6543A;
+}
+
+.action-btns {
+  display: flex;
+  flex-direction: row;
+  gap: 24rpx;
+  margin-top: 40rpx;
+}
+
+.action-btns .van-button {
+  flex: 1;
+}
+
+.btn-view {
+  height: 96rpx !important;
+  line-height: 96rpx !important;
+  font-size: 32rpx !important;
+  border-radius: 48rpx !important;
+  background: linear-gradient(135deg, #7CBD89 0%, #5BA86D 100%) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+.btn-home {
+  height: 96rpx !important;
+  line-height: 96rpx !important;
+  font-size: 32rpx !important;
+  border-radius: 48rpx !important;
+  background: #F5F5F5 !important;
+  color: #6C6C6C !important;
+  border: none !important;
+}

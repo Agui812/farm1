@@ -1,0 +1,89 @@
+<view class="order-detail-page">
+  <view class="order-status-card">
+    <view class="status-icon">
+      <van-icon name="clock-o" size="80rpx" color="#fff"/>
+    </view>
+    <view class="status-info">
+      <view class="status-text">{{order.statusText}}</view>
+      <view class="status-desc">{{order.statusDesc}}</view>
+    </view>
+  </view>
+
+  <view class="address-section card" wx:if="{{order.address}}">
+    <view class="section-title">收货信息</view>
+    <view class="address-info">
+      <view class="address-user">{{order.address_name}} {{order.address_phone}}</view>
+      <view class="address-detail">{{order.address_region}}{{order.address_detail}}</view>
+    </view>
+  </view>
+
+  <view class="goods-section card">
+    <view class="section-title">商品信息</view>
+    <view class="goods-item" wx:for="{{order.items}}" wx:key="index">
+      <van-image width="140rpx" height="140rpx" src="{{item.image}}" fit="cover" radius="12rpx"/>
+      <view class="goods-info">
+        <view class="goods-name">{{item.name}}</view>
+        <view class="goods-spec">{{item.spec || '默认'}}</view>
+        <view class="goods-bottom">
+          <view class="goods-price">¥{{item.price}}</view>
+          <view class="goods-num">x{{item.num}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="logistics-section card" wx:if="{{order.order_status === '3' && !order.isPointExchange}}">
+    <view class="section-title">物流信息</view>
+    <view class="logistics-header">
+      <view class="logistics-company">{{order.logistics.company}}</view>
+      <view class="logistics-no">运单号：{{order.logistics.trackingNo}}</view>
+    </view>
+    <view class="logistics-timeline">
+      <view class="timeline-item" wx:for="{{order.logistics.traces}}" wx:key="index" wx:for-index="idx">
+        <view class="timeline-dot {{idx === 0 ? 'active' : ''}}"></view>
+        <view class="timeline-content">
+          <view class="timeline-time">{{item.time}}</view>
+          <view class="timeline-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-section card">
+    <view class="info-row">
+      <text class="info-label">订单编号</text>
+      <text class="info-value">{{order.id}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">下单时间</text>
+      <text class="info-value">{{order.create_time}}</text>
+    </view>
+    <view class="info-row" wx:if="{{!order.isPointExchange}}">
+      <text class="info-label">商品金额</text>
+      <text class="info-value">¥{{order.total_price - order.freight}}</text>
+    </view>
+    <view class="info-row" wx:if="{{!order.isPointExchange}}">
+      <text class="info-label">运费</text>
+      <text class="info-value">{{order.freight > 0 ? '¥' + order.freight : '免运费'}}</text>
+    </view>
+    <view class="info-row" wx:if="{{order.isPointExchange}}">
+      <text class="info-label">消耗积分</text>
+      <text class="info-value price">{{order.points || 0}} 积分</text>
+    </view>
+    <view class="info-row total-row" wx:if="{{!order.isPointExchange}}">
+      <text class="info-label">实付金额</text>
+      <text class="info-value price">¥{{order.total_price}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+
+  <view class="bottom-bar">
+    <view class="bar-actions">
+      <van-button wx:if="{{order.order_status === 'pending'}}" round size="small" custom-class="btn-cancel" bindclick="cancelOrder">取消订单</van-button>
+      <van-button wx:if="{{order.order_status === 'shipped'}}" round size="small" custom-class="btn-receive" bindclick="confirmReceive">确认收货</van-button>
+      <van-button round size="small" custom-class="btn-contact" bindclick="contactSeller">联系卖家</van-button>
+    </view>
+    <van-button wx:if="{{order.order_status === 'pending'}}" round type="primary" custom-class="btn-pay" bindclick="payOrder">去付款</van-button>
+  </view>
+</view>

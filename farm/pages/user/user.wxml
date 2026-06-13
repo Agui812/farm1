@@ -1,0 +1,125 @@
+<view class="user-page">
+  <view class="user-header">
+    <view class="header-bg"></view>
+    <view class="user-info">
+      <view class="avatar-wrap" bindtap="goToLogin" wx:if="{{ !hasLogin }}">
+        <van-image
+          width="140rpx"
+          height="140rpx"
+          round
+          src="https://img.yzcdn.cn/vant/cat.jpeg"
+          fit="cover"
+        />
+      </view>
+      <view class="avatar-wrap" wx:if="{{ hasLogin }}">
+        <van-image
+          width="140rpx"
+          height="140rpx"
+          round
+          src="{{ userInfo.avatar || 'https://img.yzcdn.cn/vant/cat.jpeg' }}"
+          fit="cover"
+        />
+        <view class="vip-badge" wx:if="{{userInfo.is_vip == 1}}">
+          <van-icon name="star" size="20rpx" color="#FFD700"/>
+          <text>会员</text>
+        </view>
+      </view>
+      <view class="user-name" wx:if="{{ hasLogin && userInfo.nickname }}">{{ userInfo.nickname }}</view>
+      <view class="user-name" wx:if="{{ hasLogin && !userInfo.nickname }}">微信用户</view>
+      <view class="user-desc" wx:if="{{ !hasLogin }}">{{ userInfo.phone || '点击头像登录' }}</view>
+    </view>
+  </view>
+
+  <view class="order-section card" wx:if="{{ hasLogin }}" style="padding-top: 15px; margin-top: 20px;">
+    <view class="section-header" bindtap="goToOrders">
+      <view class="section-title">我的订单</view>
+      <view class="section-more">
+        全部订单
+        <van-icon name="arrow" size="32rpx"/>
+      </view>
+    </view>
+    <view class="order-tabs">
+      <view class="tab-item" bindtap="goToOrders" data-status="pending">
+        <van-icon name="todo-list-o" size="48rpx" color="#D6543A"/>
+        <text>待付款</text>
+      </view>
+      <view class="tab-item" bindtap="goToOrders" data-status="paid">
+        <van-icon name="logistics" size="48rpx" color="#7CBD89"/>
+        <text>待发货</text>
+      </view>
+      <view class="tab-item" bindtap="goToOrders" data-status="shipped">
+        <van-icon name="send-gift-o" size="48rpx" color="#B9A385"/>
+        <text>待收货</text>
+      </view>
+      <view class="tab-item" bindtap="goToOrders" data-status="completed">
+        <van-icon name="completed" size="48rpx" color="#9C9C9C"/>
+        <text>已完成</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="menu-section">
+    <view class="menu-item card" bindtap="goToAddress" style="
+    margin-top: 40px;
+">
+      <view class="menu-icon">
+        <van-icon name="location-o" size="44rpx" color="#7CBD89"/>
+      </view>
+      <view class="menu-text">收货地址</view>
+      <van-icon name="arrow" size="36rpx" color="#BDBDBD"/>
+    </view>
+    <view class="menu-item card" bindtap="goToContact">
+      <view class="menu-icon">
+        <van-icon name="service-o" size="44rpx" color="#7CBD89"/>
+      </view>
+      <view class="menu-text">联系我们</view>
+      <van-icon name="arrow" size="36rpx" color="#BDBDBD"/>
+    </view>
+    <view class="menu-item card" bindtap="goToVip">
+      <view class="menu-icon">
+        <van-icon name="vip-card-o" size="44rpx" color="#B9A385"/>
+      </view>
+      <view class="menu-text">会员说明</view>
+      <van-icon name="arrow" size="36rpx" color="#BDBDBD"/>
+    </view>
+
+    <view class="points-section card" wx:if="{{ hasLogin }}" bindtap="goToPoints">
+      <view class="menu-icon">
+        <van-icon name="points" size="44rpx" color="#FF6034"/>
+      </view>
+      <view class="points-content">
+        <text class="menu-text">我的积分</text>
+        <text class="points-value-inline">{{ userInfo.points || 0 }}</text>
+        <text class="points-status" wx:if="{{ hasSignedToday }}">今日已签到</text>
+        <text class="points-status" wx:else>点击签到</text>
+      </view>
+      <van-icon name="arrow" size="36rpx" color="#BDBDBD"/>
+    </view>
+  </view>
+
+  <view class="contact-section card" style="
+    padding-bottom: 60px;
+    background: #fff;
+box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.05);
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 40rpx 30rpx;
+margin: 30rpx;
+gap: 100rpx;
+border-radius: 20rpx;
+margin-bottom: 75px;
+">
+    <view class="contact-item" bindtap="callPhone">
+      <van-icon name="phone-o" size="48rpx" color="#7CBD89"/>
+      <text>一键拨号</text>
+    </view>
+    <view class="contact-divider"></view>
+    <view class="contact-item" bindtap="copyWechat">
+      <van-icon name="chat-o" size="48rpx" color="#7CBD89"/>
+      <text>一键微信</text>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>

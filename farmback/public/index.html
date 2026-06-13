@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>艾萌农场 - 后台管理系统</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FAF7F2;
+      --warm-white: #FFFEF9;
+      --earth-dark: #2C2416;
+      --earth-brown: #5C4033;
+      --earth-tan: #A68B5B;
+      --grass-green: #4A6741;
+      --grass-light: #7A9B6D;
+      --moss: #8FA97A;
+      --wheat: #E8DCC4;
+      --rice-white: #F5F1E8;
+      --accent-red: #C4533A;
+      --shadow: rgba(44, 36, 22, 0.08);
+      --shadow-strong: rgba(44, 36, 22, 0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background: var(--cream);
+      color: var(--earth-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3 { font-family: 'Noto Serif SC', serif; font-weight: 600; }
+
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: var(--earth-dark);
+      color: var(--wheat);
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 30px 24px;
+      border-bottom: 1px solid rgba(168, 139, 91, 0.2);
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--grass-green) 0%, var(--grass-light) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg { width: 24px; height: 24px; fill: white; }
+
+    .logo-text {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+
+    .sidebar-nav { padding: 20px 0; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 24px;
+      color: var(--wheat);
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover { background: rgba(168, 139, 91, 0.1); }
+
+    .nav-item.active {
+      background: rgba(74, 103, 65, 0.2);
+      border-left-color: var(--grass-green);
+      color: var(--grass-light);
+    }
+
+    .nav-item svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: var(--warm-white);
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--wheat);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar h1 {
+      font-size: 24px;
+      letter-spacing: 2px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--wheat);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--earth-brown);
+    }
+
+    .user-name { font-weight: 500; font-size: 14px; }
+    .user-role { font-size: 12px; color: var(--earth-tan); }
+
+    .page-content {
+      padding: 32px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 4px 20px var(--shadow);
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px var(--shadow-strong); }
+
+    .stat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .stat-icon svg { width: 28px; height: 28px; fill: white; }
+
+    .stat-icon.green { background: linear-gradient(135deg, var(--grass-green) 0%, var(--grass-light) 100%); }
+    .stat-icon.orange { background: linear-gradient(135deg, var(--accent-red) 0%, #E57373 100%); }
+    .stat-icon.blue { background: linear-gradient(135deg, #1976D2 0%, #64B5F6 100%); }
+    .stat-icon.purple { background: linear-gradient(135deg, #7B1FA2 0%, #BA68C8 100%); }
+
+    .stat-value {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .stat-label { font-size: 14px; color: var(--earth-tan); }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 4px 20px var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--wheat);
+    }
+
+    .card-title {
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--grass-green) 0%, var(--grass-light) 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(74, 103, 65, 0.3);
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(74, 103, 65, 0.4); }
+
+    .btn-secondary {
+      background: var(--wheat);
+      color: var(--earth-dark);
+    }
+
+    .btn-secondary:hover { background: var(--earth-tan); color: white; }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--accent-red) 0%, #E57373 100%);
+      color: white;
+    }
+
+    .btn-sm { padding: 8px 16px; font-size: 13px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--wheat);
+    }
+
+    th {
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--earth-tan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    tbody tr { transition: background 0.2s; }
+    tbody tr:hover { background: var(--cream); }
+
+    .product-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: var(--rice-white);
+      overflow: hidden;
+    }
+
+    .product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .product-name { font-weight: 500; margin-bottom: 4px; }
+    .product-desc { font-size: 13px; color: var(--earth-tan); }
+
+    .price { font-weight: 600; color: var(--accent-red); }
+    .price-original { font-size: 12px; color: var(--earth-tan); text-decoration: line-through; margin-left: 8px; }
+
+    .status-badge {
+      display: inline-flex;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge.active { background: #E8F5E9; color: #2E7D32; }
+    .status-badge.inactive { background: #FFEBEE; color: #C62828; }
+    .status-badge.pending { background: #FFF3E0; color: #E65100; }
+    .status-badge.paid { background: #E3F2FD; color: #1565C0; }
+    .status-badge.shipped { background: #F3E5F5; color: #7B1FA2; }
+    .status-badge.completed { background: #E8F5E9; color: #2E7D32; }
+
+    .actions { display: flex; gap: 8px; }
+
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .action-btn svg { width: 18px; height: 18px; }
+
+    .action-btn.edit { background: #E3F2FD; }
+    .action-btn.edit svg { fill: #1565C0; }
+    .action-btn.delete { background: #FFEBEE; }
+    .action-btn.delete svg { fill: #C62828; }
+
+    .action-btn:hover { transform: scale(1.1); }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid var(--wheat);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s;
+      background: var(--cream);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--grass-green);
+      background: white;
+    }
+
+    .form-group textarea { min-height: 120px; resize: vertical; }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--wheat);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 36, 22, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      padding: 24px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--wheat);
+    }
+
+    .modal-header h3 { font-size: 18px; }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--wheat);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover { background: var(--earth-tan); }
+    .modal-close svg { width: 18px; height: 18px; fill: var(--earth-dark); }
+
+    .modal-body { padding: 28px; }
+
+    .modal-footer {
+      padding: 0 28px 28px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--earth-tan);
+    }
+
+    .empty-state svg {
+      width: 80px;
+      height: 80px;
+      fill: var(--wheat);
+      margin-bottom: 16px;
+    }
+
+    .config-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      background: var(--cream);
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+
+    .config-info h4 {
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .config-info p {
+      font-size: 13px;
+      color: var(--earth-tan);
+    }
+
+    .config-value {
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 600;
+      color: var(--grass-green);
+    }
+
+    .order-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .order-detail-item {
+      padding: 16px;
+      background: var(--cream);
+      border-radius: 12px;
+    }
+
+    .order-detail-item label {
+      font-size: 12px;
+      color: var(--earth-tan);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .order-detail-item span {
+      font-weight: 500;
+    }
+
+    .sku-dropdown {
+      margin-top: 8px;
+      position: relative;
+    }
+    .sku-toggle {
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      padding: 4px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .sku-toggle:hover {
+      background: #e0e0e0;
+    }
+    .sku-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 100;
+      min-width: 200px;
+      padding: 8px;
+    }
+    .sku-item {
+      padding: 6px 8px;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sku-item:last-child {
+      border-bottom: none;
+    }
+    .sku-item span:nth-child(2) {
+      color: #ff6600;
+    }
+    .sku-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .sku-actions .action-btn {
+      padding: 2px 4px;
+    }
+    .add-sku {
+      cursor: pointer;
+      justify-content: center;
+      color: #67c23a;
+      transition: background 0.2s;
+    }
+    .add-sku:hover {
+      background: #f0f9eb;
+    }
+
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .form-grid { grid-template-columns: 1fr; }
+      .sidebar { transform: translateX(-100%); }
+      .main-content { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <span class="logo-text">艾萌农场</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-page="dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          <span>数据概览</span>
+        </a>
+        <a class="nav-item" data-page="products">
+          <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+          <span>商品管理</span>
+        </a>
+        <a class="nav-item" data-page="orders">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+          <span>订单管理</span>
+        </a>
+        <a class="nav-item" data-page="users">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span>用户管理</span>
+        </a>
+        <a class="nav-item" data-page="addresses">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span>地址管理</span>
+        </a>
+        <a class="nav-item" data-page="config">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          <span>系统配置</span>
+        </a>
+        <a class="nav-item" data-page="category">
+          <svg viewBox="0 0 24 24"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"/></svg>
+          <span>分类管理</span>
+        </a>
+        <a class="nav-item" data-page="sku">
+          <svg viewBox="0 0 24 24"><path d="M19.77 5.03l1.4 1.4L8.43 19.17l-1.4-1.4L19.77 5.03zm-1.41-1.41L5.62 16.36l1.4 1.4 12.74-12.74-1.4-1.4zM5.04 19.17l1.4 1.4 1.4-1.4-1.4-1.4-1.4 1.4z"/></svg>
+          <span>商品规格</span>
+        </a>
+        <a class="nav-item" data-page="admin">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span>管理员管理</span>
+        </a>
+        <a class="nav-item" data-page="banner">
+          <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM9 8h2v8H9zm4 0h2v8h-2z"/></svg>
+          <span>轮播图管理</span>
+        </a>
+        <a class="nav-item" data-page="cart">
+          <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+          <span>购物车管理</span>
+        </a>
+        <a class="nav-item" data-page="points">
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span>积分管理</span>
+        </a>
+        <a class="nav-item" data-page="pointGoods">
+          <svg viewBox="0 0 24 24"><path d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z"/></svg>
+          <span>积分商品</span>
+        </a>
+        <a class="nav-item" data-page="pointExchange">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+          <span>兑换订单</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <h1 id="pageTitle">数据概览</h1>
+        <div class="topbar-right">
+          <div class="user-info">
+            <div class="user-avatar">管</div>
+            <div>
+              <div class="user-name">管理员</div>
+              <div class="user-role">超级管理员</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div id="page-dashboard" class="page active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon green">
+                <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+              </div>
+              <div class="stat-value" id="statProducts">0</div>
+              <div class="stat-label">商品数量</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon blue">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+              </div>
+              <div class="stat-value" id="statOrders">0</div>
+              <div class="stat-label">订单总数</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon orange">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              </div>
+              <div class="stat-value" id="statUsers">0</div>
+              <div class="stat-label">用户数量</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon purple">
+                <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+              </div>
+              <div class="stat-value" id="statRevenue">¥0</div>
+              <div class="stat-label">总收入</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">最近订单</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchPage('orders')">查看全部</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>订单号</th>
+                  <th>用户</th>
+                  <th>商品</th>
+                  <th>实付款</th>
+                  <th>状态</th>
+                  <th>时间</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-products" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">商品列表</h3>
+              <button class="btn btn-primary" onclick="openProductModal()">添加商品</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>图片</th>
+                  <th>商品</th>
+                  <th>分类</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="productsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-orders" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">订单列表</h3>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>订单号</th>
+                  <th>用户</th>
+                  <th>收货信息</th>
+                  <th>商品</th>
+                  <th>实付款</th>
+                  <th>状态</th>
+                  <th>时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-pointExchange" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">兑换订单</h3>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>订单号</th>
+                  <th>用户</th>
+                  <th>商品</th>
+                  <th>积分</th>
+                  <th>数量</th>
+                  <th>状态</th>
+                  <th>时间</th>
+                </tr>
+              </thead>
+              <tbody id="pointExchangeTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-users" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">用户列表</h3>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>头像</th>
+                  <th>昵称</th>
+                  <th>手机号</th>
+                  <th>会员</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-addresses" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">地址列表</h3>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>用户</th>
+                  <th>收货人</th>
+                  <th>电话</th>
+                  <th>地址</th>
+                  <th>默认</th>
+                </tr>
+              </thead>
+              <tbody id="addressesTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-admin" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">管理员管理</h3>
+              <button class="btn-primary" onclick="openAdminModal()">添加管理员</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>账号</th>
+                  <th>昵称</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="adminTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-config" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">系统配置</h3>
+            </div>
+            <div id="configList"></div>
+          </div>
+        </div>
+
+        <div id="page-category" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">分类管理</h3>
+              <button class="btn-primary" onclick="openCategoryModal()">添加分类</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>分类名称</th>
+                  <th>分类图标</th>
+                  <th>排序</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="categoryTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-sku" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">商品规格管理</h3>
+              <button class="btn-primary" onclick="openSkuModal()">添加规格</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>商品ID</th>
+                  <th>规格名称</th>
+                  <th>价格</th>
+                  <th>库存</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="skuTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-banner" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">轮播图管理</h3>
+              <button class="btn-primary" onclick="openBannerModal()">添加轮播图</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>标题</th>
+                  <th>图片</th>
+                  <th>排序</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="bannerTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-cart" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">购物车管理</h3>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>用户</th>
+                  <th>商品</th>
+                  <th>规格</th>
+                  <th>数量</th>
+                  <th>单价</th>
+                  <th>选中状态</th>
+                  <th>添加时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="cartTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-points" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">积分管理</h3>
+            </div>
+            <div style="margin-bottom:16px;">
+              <select id="pointsUserSelect" onchange="loadUserPoints()" style="padding:8px 12px;border:1px solid #dcdfe6;border-radius:4px;margin-right:12px;">
+                <option value="">请选择用户</option>
+              </select>
+              <button class="btn btn-primary" onclick="openPointsModal()">添加积分</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>用户</th>
+                  <th>积分变动</th>
+                  <th>总积分</th>
+                  <th>类型</th>
+                  <th>备注</th>
+                  <th>时间</th>
+                </tr>
+              </thead>
+              <tbody id="pointsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="page-pointGoods" class="page">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">积分商品</h3>
+              <button class="btn btn-primary" onclick="openPointGoodsModal()">添加商品</button>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>图片</th>
+                  <th>名称</th>
+                  <th>所需积分</th>
+                  <th>库存</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="pointGoodsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="productModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="productModalTitle">添加商品</h3>
+        <button class="modal-close" onclick="closeProductModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="productId">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>商品名称</label>
+            <input type="text" id="productName" placeholder="请输入商品名称">
+          </div>
+          <div class="form-group">
+            <label>分类</label>
+            <select id="productCategory">
+              <option value="">请选择分类</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>主图</label>
+            <input type="file" id="productImageFile" accept="image/*" onchange="previewProductImage(this)">
+            <p id="productPreviewText" style="color:#666;font-size:12px;margin-top:5px;">${product?.image ? '当前图片' : '请选择图片'}</p>
+            <img id="productPreview" src="${product?.image || ''}" style="max-width:100px;margin-top:10px;${product?.image ? '' : 'display:none'}">
+          </div>
+          <div class="form-group full">
+            <label>商品详情</label>
+            <textarea id="productDesc" placeholder="请输入商品详情描述"></textarea>
+          </div>
+          <div class="form-group">
+            <label>状态</label>
+            <select id="productStatus">
+              <option value="1">上架</option>
+              <option value="0">下架</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeProductModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveProduct()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="skuModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="skuModalTitle">添加规格</h3>
+        <button class="modal-close" onclick="closeSkuModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="skuId">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>商品</label>
+            <select id="skuProduct" class="form-control">
+              <option value="">请选择商品</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>规格名称</label>
+            <input type="text" id="skuName" placeholder="如：5kg袋装">
+          </div>
+          <div class="form-group">
+            <label>价格</label>
+            <input type="number" id="skuPrice" placeholder="0.00" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>库存</label>
+            <input type="number" id="skuStock" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>状态</label>
+            <select id="skuStatus">
+              <option value="1">启用</option>
+              <option value="0">禁用</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeSkuModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveSku()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="userModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="userModalTitle">编辑用户</h3>
+        <button class="modal-close" onclick="closeUserModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="userId">
+        <input type="hidden" id="userOpenid">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>昵称</label>
+            <input type="text" id="userNickname" placeholder="用户昵称">
+          </div>
+          <div class="form-group">
+            <label>头像</label>
+            <input type="text" id="userAvatar" placeholder="头像URL">
+          </div>
+          <div class="form-group">
+            <label>手机号</label>
+            <input type="text" id="userPhone" placeholder="手机号">
+          </div>
+          <div class="form-group">
+            <label>会员</label>
+            <select id="userIsVip">
+              <option value="0">普通用户</option>
+              <option value="1">会员</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeUserModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveUser()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>订单详情</h3>
+        <button class="modal-close" onclick="closeOrderModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="orderDetailContent"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeOrderModal()">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="pointsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="pointsModalTitle">添加积分</h3>
+        <button class="modal-close" onclick="closePointsModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="pointsId">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>用户</label>
+            <select id="pointsUserId" onchange="loadUserTotalPoints()">
+              <option value="">请选择用户</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>变动积分</label>
+            <input type="number" id="pointsValue" placeholder="正数增加，负数扣除">
+          </div>
+          <div class="form-group">
+            <label>类型</label>
+            <select id="pointsType">
+              <option value="sign">签到</option>
+              <option value="order">订单消费</option>
+              <option value="recharge">充值</option>
+              <option value="exchange">兑换</option>
+              <option value="hd">活动</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>当前总积分</label>
+            <div id="currentTotalPoints" style="padding:8px 0;color:#909399;">-</div>
+          </div>
+          <div class="form-group full">
+            <label>备注</label>
+            <input type="text" id="pointsRemark" placeholder="备注说明">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closePointsModal()">取消</button>
+        <button class="btn btn-primary" onclick="savePoints()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="pointGoodsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="pointGoodsModalTitle">添加积分商品</h3>
+        <button class="modal-close" onclick="closePointGoodsModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="pointGoodsId">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>商品名称</label>
+            <input type="text" id="pointGoodsName" placeholder="请输入商品名称">
+          </div>
+          <div class="form-group full">
+            <label>商品图片</label>
+            <input type="text" id="pointGoodsImage" placeholder="图片URL">
+          </div>
+          <div class="form-group">
+            <label>所需积分</label>
+            <input type="number" id="pointGoodsPoints" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>库存</label>
+            <input type="number" id="pointGoodsStock" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>状态</label>
+            <select id="pointGoodsStatus">
+              <option value="1">上架</option>
+              <option value="0">下架</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closePointGoodsModal()">取消</button>
+        <button class="btn btn-primary" onclick="savePointGoods()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:3000/api';
+
+    window.switchPage = function(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      document.querySelector(`[data-page="${page}"]`).classList.add('active');
+      const titles = { dashboard: '数据概览', products: '商品管理', orders: '订单管理', users: '用户管理', addresses: '地址管理', config: '系统配置', category: '分类管理', sku: '商品规格', banner: '轮播图管理', cart: '购物车管理', admin: '管理员管理', points: '积分管理', pointGoods: '积分商品', pointExchange: '兑换订单' };
+      document.getElementById('pageTitle').textContent = titles[page] || page;
+      loadPageData(page);
+    };
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => switchPage(item.dataset.page));
+    });
+
+    async function loadPageData(page) {
+      switch (page) {
+        case 'dashboard': await loadDashboard(); break;
+        case 'products': await loadProducts(); break;
+        case 'orders': await loadOrders(); break;
+        case 'users': await loadUsers(); break;
+        case 'addresses': await loadAddresses(); break;
+        case 'config': await loadConfig(); break;
+        case 'category': await loadCategory(); break;
+        case 'sku': await loadSku(); break;
+        case 'banner': await loadBanner(); break;
+        case 'cart': await loadCart(); break;
+        case 'points': await loadUsersForPoints(); break;
+        case 'pointGoods': await loadPointGoods(); break;
+        case 'pointExchange': await loadPointExchange(); break;
+        case 'admin': await loadAdmin(); break;
+      }
+    }
+
+    async function loadDashboard() {
+      try {
+        const [productsRes, ordersRes, usersRes] = await Promise.all([
+          fetch(`${API_BASE}/product`),
+          fetch(`${API_BASE}/order/user/1`),
+          fetch(`${API_BASE}/user/o123456789`)
+        ]);
+        const productsData = await productsRes.json();
+        const ordersData = await ordersRes.json();
+        document.getElementById('statProducts').textContent = productsData.data?.length || 0;
+        document.getElementById('statOrders').textContent = ordersData.data?.length || 0;
+        document.getElementById('statUsers').textContent = 1;
+        const revenue = (ordersData.data || []).reduce((sum, o) => sum + parseFloat(o.real_price || 0), 0);
+        document.getElementById('statRevenue').textContent = '¥' + revenue.toFixed(2);
+        renderRecentOrders(ordersData.data || []);
+      } catch (err) {
+        console.error('加载仪表盘失败', err);
+      }
+    }
+
+    function renderRecentOrders(orders) {
+      const tbody = document.getElementById('recentOrdersTable');
+      if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无订单</td></tr>';
+        return;
+      }
+      tbody.innerHTML = orders.slice(0, 5).map(order => {
+        const statusMap = { 1: { text: '待付款', class: 'pending' }, 2: { text: '待发货', class: 'paid' }, 3: { text: '待收货', class: 'shipped' }, 4: { text: '已完成', class: 'completed' }, 5: { text: '已取消', class: 'inactive' } };
+        const status = statusMap[order.order_status] || statusMap[1];
+        const items = order.items || [];
+        const productNames = items.map(i => i.product_name).join(', ') || '-';
+        return `<tr>
+          <td style="font-family:monospace;font-size:13px">${order.order_no}</td>
+          <td>用户${order.user_id}</td>
+          <td>${productNames.substring(0, 20)}${productNames.length > 20 ? '...' : ''}</td>
+          <td class="price">¥${order.real_price}</td>
+          <td><span class="status-badge ${status.class}">${status.text}</span></td>
+          <td>${new Date(order.create_time).toLocaleDateString()}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function loadProducts() {
+      try {
+        const res = await fetch(`${API_BASE}/product`);
+        const data = await res.json();
+        renderProducts(data.data || []);
+      } catch (err) {
+        document.getElementById('productsTable').innerHTML = '<tr><td colspan="6" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    function renderProducts(products) {
+      const tbody = document.getElementById('productsTable');
+      if (products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无商品</td></tr>';
+        return;
+      }
+      tbody.innerHTML = products.map(p => `<tr>
+        <td>${p.image ? '<img src="'+p.image+'" style="width:50px;height:50px;object-fit:cover;border-radius:4px">' : '-'}</td>
+        <td>
+          <div class="product-name">${p.name}</div>
+          <div class="product-desc">${(p.desc || '').substring(0, 30)}...</div>
+          <div class="sku-dropdown" id="sku-drop-${p.id}">
+            <button class="sku-toggle" onclick="toggleSkuList(${p.id})">规格 ▾</button>
+            <div class="sku-list" id="sku-list-${p.id}" style="display:none;"></div>
+          </div>
+        </td>
+        <td>${p.cate_id || '-'}</td>
+        <td><span class="status-badge ${p.status === 1 ? 'active' : 'inactive'}">${p.status === 1 ? '上架' : '下架'}</span></td>
+        <td>${new Date(p.create_time).toLocaleDateString()}</td>
+        <td><div class="actions">
+          <button class="action-btn edit" onclick="editProduct(${p.id})"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+          <button class="action-btn delete" onclick="deleteProduct(${p.id})"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+        </div></td>
+      </tr>`).join('');
+    }
+
+    async function toggleSkuList(productId) {
+      const listEl = document.getElementById(`sku-list-${productId}`);
+      if (listEl.style.display === 'none') {
+        listEl.style.display = 'block';
+        if (!listEl.innerHTML.trim()) {
+          await loadSkuList(productId);
+        }
+      } else {
+        listEl.style.display = 'none';
+      }
+    }
+
+    async function loadSkuList(productId) {
+      try {
+        const res = await fetch(`${API_BASE}/product-sku/product/${productId}`);
+        const data = await res.json();
+        const listEl = document.getElementById(`sku-list-${productId}`);
+        let html = '';
+        if (data.data && data.data.length > 0) {
+          html = data.data.map(s => `<div class="sku-item">
+            <span>${s.sku_name}</span>
+            <span>¥${s.price}</span>
+            <span>库存:${s.stock}</span>
+            <div class="sku-actions">
+              <button class="action-btn edit" onclick="event.stopPropagation();editSkuFromDropdown(${s.id})" title="编辑"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+              <button class="action-btn delete" onclick="event.stopPropagation();deleteSkuFromDropdown(${s.id}, ${productId})" title="删除"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+            </div>
+          </div>`).join('');
+        } else {
+          html = '<div class="sku-item">暂无规格</div>';
+        }
+        html += `<div class="sku-item add-sku" onclick="event.stopPropagation();openSkuModalForProduct(${productId})">
+          <span style="color:#67c23a;">+ 添加规格</span>
+        </div>`;
+        listEl.innerHTML = html;
+      } catch (err) {
+        document.getElementById(`sku-list-${productId}`).innerHTML = '<div class="sku-item">加载失败</div>';
+      }
+    }
+
+    function openProductModal(product = null) {
+      document.getElementById('productModalTitle').textContent = product ? '编辑商品' : '添加商品';
+      document.getElementById('productId').value = product?.id || '';
+      document.getElementById('productName').value = product?.name || '';
+      document.getElementById('productDesc').value = product?.desc || '';
+      document.getElementById('productStatus').value = product?.status || 1;
+      const preview = document.getElementById('productPreview');
+      const previewText = document.getElementById('productPreviewText');
+      if (product?.image) {
+        preview.src = product.image;
+        preview.style.display = 'block';
+        previewText.textContent = '当前图片';
+      } else {
+        preview.src = '';
+        preview.style.display = 'none';
+        previewText.textContent = '请选择图片';
+      }
+      document.getElementById('productImageFile').value = '';
+      loadCategoriesForProduct(product?.cate_id);
+      document.getElementById('productModal').classList.add('active');
+    }
+
+    async function loadCategoriesForProduct(selectedId) {
+      try {
+        const res = await fetch(`${API_BASE}/category/all/list`);
+        const data = await res.json();
+        const select = document.getElementById('productCategory');
+        select.innerHTML = '<option value="">请选择分类</option>';
+        (data.data || []).forEach(c => {
+          select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+        });
+        if (selectedId) select.value = selectedId;
+      } catch (err) {}
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.remove('active');
+    }
+
+    async function editProduct(id) {
+      try {
+        const res = await fetch(`${API_BASE}/product/${id}`);
+        const data = await res.json();
+        if (data.code === 0) {
+          openProductModal(data.data);
+        }
+      } catch (err) {
+        alert('加载商品失败');
+      }
+    }
+
+    function previewProductImage(input) {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('productPreview').src = e.target.result;
+          document.getElementById('productPreview').style.display = 'block';
+          document.getElementById('productPreviewText').textContent = '预览: ' + file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    async function saveProduct() {
+      const id = document.getElementById('productId').value;
+      const name = document.getElementById('productName').value;
+      const desc = document.getElementById('productDesc').value;
+      const status = parseInt(document.getElementById('productStatus').value);
+      const cate_id = parseInt(document.getElementById('productCategory').value) || null;
+      const fileInput = document.getElementById('productImageFile');
+      const file = fileInput.files[0];
+      try {
+        if (file) {
+          const formData = new FormData();
+          formData.append('name', name);
+          formData.append('desc', desc);
+          formData.append('status', status);
+          formData.append('cate_id', cate_id);
+          formData.append('image', file);
+          const url = id ? `${API_BASE}/product/${id}` : `${API_BASE}/product`;
+          const method = id ? 'PUT' : 'POST';
+          const res = await fetch(url, { method, body: formData });
+          const data = await res.json();
+          if (data.code === 0) {
+            closeProductModal();
+            loadProducts();
+            alert('保存成功');
+          }
+        } else {
+          const image = document.getElementById('productPreview').src;
+          const payload = { name, image, desc, status, cate_id };
+          const url = id ? `${API_BASE}/product/${id}` : `${API_BASE}/product`;
+          const method = id ? 'PUT' : 'POST';
+          const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+          const data = await res.json();
+          if (data.code === 0) {
+            closeProductModal();
+            loadProducts();
+            alert('保存成功');
+          }
+        }
+      } catch (err) {
+        alert('保存失败');
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('确定删除该商品？')) return;
+      try {
+        const res = await fetch(`${API_BASE}/product/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.code === 0) {
+          loadProducts();
+          alert('删除成功');
+        }
+      } catch (err) {
+        alert('删除失败');
+      }
+    }
+
+    async function loadOrders() {
+      try {
+        const res = await fetch(`${API_BASE}/order/all`);
+        const data = await res.json();
+        renderOrders(data.data || []);
+      } catch (err) {
+        document.getElementById('ordersTable').innerHTML = '<tr><td colspan="8" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    function renderOrders(orders) {
+      const tbody = document.getElementById('ordersTable');
+      if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无订单</td></tr>';
+        return;
+      }
+      const statusMap = { 1: { text: '待付款', class: 'pending' }, 2: { text: '待发货', class: 'paid' }, 3: { text: '待收货', class: 'shipped' }, 4: { text: '已完成', class: 'completed' }, 5: { text: '已取消', class: 'inactive' } };
+      tbody.innerHTML = orders.map(order => {
+        const status = statusMap[order.order_status] || statusMap[1];
+        const items = order.items || [];
+        const productNames = items.map(i => `${i.product_name}×${i.num}`).join(', ') || '-';
+        return `<tr>
+          <td style="font-family:monospace;font-size:12px">${order.order_no}</td>
+          <td>${order.user_nickname || '用户'+order.user_id}</td>
+          <td>${order.region || ''} ${order.detail || ''}</td>
+          <td>${productNames.substring(0, 25)}${productNames.length > 25 ? '...' : ''}</td>
+          <td class="price">¥${order.real_price}</td>
+          <td><span class="status-badge ${status.class}">${status.text}</span></td>
+          <td>${new Date(order.create_time).toLocaleDateString()}</td>
+          <td><div class="actions">
+            <button class="action-btn edit" onclick="viewOrder(${order.id})"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></button>
+            ${order.order_status === 2 ? `<button class="action-btn edit" onclick="shipOrder(${order.id})" title="发货"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg></button>` : ''}
+          </div></td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function viewOrder(id) {
+      try {
+        const res = await fetch(`${API_BASE}/order/${id}`);
+        const data = await res.json();
+        if (data.code === 0) {
+          const order = data.data;
+          const statusMap = { 1: '待付款', 2: '待发货', 3: '待收货', 4: '已完成', 5: '已取消' };
+          const itemsHtml = (order.items || []).map(item => `<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--wheat)">
+            <span>${item.product_name} × ${item.num}</span><span class="price">¥${item.total_price}</span>
+          </div>`).join('');
+          document.getElementById('orderDetailContent').innerHTML = `<div class="order-detail-grid">
+            <div class="order-detail-item"><label>订单号</label><span style="font-family:monospace">${order.order_no}</span></div>
+            <div class="order-detail-item"><label>订单状态</label><span>${statusMap[order.order_status]}</span></div>
+            <div class="order-detail-item"><label>商品总价</label><span>¥${order.total_price}</span></div>
+            <div class="order-detail-item"><label>运费</label><span>¥${order.freight}</span></div>
+            <div class="order-detail-item"><label>实付款</label><span class="price">¥${order.real_price}</span></div>
+            <div class="order-detail-item"><label>下单时间</label><span>${new Date(order.create_time).toLocaleString()}</span></div>
+          </div>
+          <h4 style="margin:20px 0 12px;font-size:14px;color:var(--earth-tan)">商品明细</h4>
+          ${itemsHtml}`;
+          document.getElementById('orderModal').classList.add('active');
+        }
+      } catch (err) {
+        alert('加载订单详情失败');
+      }
+    }
+
+    function closeOrderModal() {
+      document.getElementById('orderModal').classList.remove('active');
+    }
+
+    async function shipOrder(id) {
+      if (!confirm('确认发货？')) return;
+      try {
+        const res = await fetch(`${API_BASE}/order/${id}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_status: 3 })
+        });
+        const data = await res.json();
+        if (data.code === 0) {
+          loadOrders();
+          alert('发货成功');
+        }
+      } catch (err) {
+        alert('操作失败');
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        const res = await fetch(`${API_BASE}/user/all/list`);
+        const data = await res.json();
+        const tbody = document.getElementById('usersTable');
+        if (!data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">暂无用户</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.data.map(u => `<tr>
+          <td>${u.id}</td>
+          <td>${u.avatar ? `<img src="${u.avatar}" width="30" height="30" style="border-radius:50%;object-fit:cover;">` : '-'}</td>
+          <td>${u.nickname || '-'}</td>
+          <td>${u.phone || '-'}</td>
+          <td><span class="status-badge ${u.is_vip === 1 ? 'active' : ''}">${u.is_vip === 1 ? '会员' : '普通'}</span></td>
+          <td>${new Date(u.create_time).toLocaleDateString()}</td>
+          <td><button class="action-btn edit" onclick="openUserModal(${u.id}, '${u.openid}', '${u.nickname || ''}', '${u.avatar || ''}', '${u.phone || ''}', ${u.is_vip})"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button></td>
+        </tr>`).join('');
+      } catch (err) {
+        document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    function openUserModal(id, openid, nickname, avatar, phone, isVip) {
+      document.getElementById('userId').value = id;
+      document.getElementById('userOpenid').value = openid;
+      document.getElementById('userNickname').value = nickname;
+      document.getElementById('userAvatar').value = avatar;
+      document.getElementById('userPhone').value = phone;
+      document.getElementById('userIsVip').value = isVip;
+      document.getElementById('userModalTitle').textContent = '编辑用户';
+      document.getElementById('userModal').classList.add('active');
+    }
+
+    async function saveUser() {
+      const id = document.getElementById('userId').value;
+      const payload = {
+        nickname: document.getElementById('userNickname').value,
+        avatar: document.getElementById('userAvatar').value,
+        phone: document.getElementById('userPhone').value,
+        is_vip: parseInt(document.getElementById('userIsVip').value)
+      };
+      try {
+        const res = await fetch(`${API_BASE}/user/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.code === 0) {
+          closeUserModal();
+          loadUsers();
+          alert('保存成功');
+        } else {
+          alert(data.message || '保存失败');
+        }
+      } catch (err) {
+        alert('保存失败');
+      }
+    }
+
+    function closeUserModal() {
+      document.getElementById('userModal').classList.remove('active');
+    }
+
+    async function loadUsersForPoints() {
+      try {
+        const res = await fetch(`${API_BASE}/user/all/list`);
+        const data = await res.json();
+        if (data.data) {
+          const options = data.data.map(u => `<option value="${u.id}">${u.nickname || '用户'+u.id} (${u.phone || '无手机'})</option>`).join('');
+          document.getElementById('pointsUserSelect').innerHTML = '<option value="">请选择用户</option>' + options;
+          document.getElementById('pointsUserId').innerHTML = '<option value="">请选择用户</option>' + options;
+        }
+      } catch (err) {
+        console.error('加载用户失败', err);
+      }
+    }
+
+    async function loadUserPoints() {
+      const userId = document.getElementById('pointsUserSelect').value;
+      const tbody = document.getElementById('pointsTable');
+      if (!userId) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">请先选择用户</td></tr>';
+        return;
+      }
+      try {
+        const res = await fetch(`${API_BASE}/user-points/user/${userId}`);
+        const data = await res.json();
+        if (!data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">暂无积分记录</td></tr>';
+          return;
+        }
+        const typeMap = { sign: '签到', order: '订单消费', recharge: '充值', exchange: '兑换', hd: '活动' };
+        tbody.innerHTML = data.data.map(p => `<tr>
+          <td>${p.id}</td>
+          <td>用户${p.user_id}</td>
+          <td style="color:${p.points >= 0 ? '#67c23a' : '#f56c6c'}">${p.points >= 0 ? '+' : ''}${p.points}</td>
+          <td>${p.total_points}</td>
+          <td>${typeMap[p.type] || p.type}</td>
+          <td>${p.remark || '-'}</td>
+          <td>${new Date(p.create_time).toLocaleString()}</td>
+        </tr>`).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    async function loadUserTotalPoints() {
+      const userId = document.getElementById('pointsUserId').value;
+      if (!userId) {
+        document.getElementById('currentTotalPoints').textContent = '-';
+        return;
+      }
+      try {
+        const res = await fetch(`${API_BASE}/user-points/user/${userId}/total`);
+        const data = await res.json();
+        document.getElementById('currentTotalPoints').textContent = data.data.total_points;
+      } catch (err) {
+        document.getElementById('currentTotalPoints').textContent = '-';
+      }
+    }
+
+    function openPointsModal() {
+      const userId = document.getElementById('pointsUserSelect').value;
+      document.getElementById('pointsUserId').value = userId;
+      document.getElementById('pointsValue').value = '';
+      document.getElementById('pointsType').value = 'sign';
+      document.getElementById('pointsRemark').value = '';
+      loadUserTotalPoints();
+      document.getElementById('pointsModal').classList.add('active');
+    }
+
+    async function savePoints() {
+      const userId = document.getElementById('pointsUserId').value;
+      const points = document.getElementById('pointsValue').value;
+      const type = document.getElementById('pointsType').value;
+      const remark = document.getElementById('pointsRemark').value;
+      if (!userId) { alert('请选择用户'); return; }
+      if (points === '' || isNaN(points)) { alert('请输入有效积分'); return; }
+      try {
+        const res = await fetch(`${API_BASE}/user-points`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: parseInt(userId), points: parseInt(points), type, remark })
+        });
+        const data = await res.json();
+        if (data.code === 0) {
+          closePointsModal();
+          loadUserPoints();
+          alert('保存成功');
+        } else {
+          alert(data.message || '保存失败');
+        }
+      } catch (err) {
+        alert('保存失败');
+      }
+    }
+
+    function closePointsModal() {
+      document.getElementById('pointsModal').classList.remove('active');
+    }
+
+    async function loadPointGoods() {
+      try {
+        const res = await fetch(`${API_BASE}/point-goods/all/list`);
+        const data = await res.json();
+        const tbody = document.getElementById('pointGoodsTable');
+        if (!data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">暂无商品</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.data.map(g => `<tr>
+          <td>${g.id}</td>
+          <td>${g.image ? `<img src="${g.image}" width="40" height="40" style="object-fit:cover;border-radius:4px;">` : '-'}</td>
+          <td>${g.name}</td>
+          <td>${g.points}</td>
+          <td>${g.stock}</td>
+          <td><span class="status-badge ${g.status === 1 ? 'active' : ''}">${g.status === 1 ? '上架' : '下架'}</span></td>
+          <td>
+            <button class="action-btn edit" onclick="editPointGoods(${g.id}, '${g.name}', '${g.image}', ${g.points}, ${g.stock}, ${g.status})"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+            <button class="action-btn delete" onclick="deletePointGoods(${g.id})"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+          </td>
+        </tr>`).join('');
+      } catch (err) {
+        document.getElementById('pointGoodsTable').innerHTML = '<tr><td colspan="7" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    function openPointGoodsModal(id, name, image, points, stock, status) {
+      document.getElementById('pointGoodsId').value = id || '';
+      document.getElementById('pointGoodsName').value = name || '';
+      document.getElementById('pointGoodsImage').value = image || '';
+      document.getElementById('pointGoodsPoints').value = points !== undefined ? points : '';
+      document.getElementById('pointGoodsStock').value = stock !== undefined ? stock : '';
+      document.getElementById('pointGoodsStatus').value = status !== undefined ? status : 1;
+      document.getElementById('pointGoodsModalTitle').textContent = id ? '编辑商品' : '添加商品';
+      document.getElementById('pointGoodsModal').classList.add('active');
+    }
+
+    function editPointGoods(id, name, image, points, stock, status) {
+      openPointGoodsModal(id, name, image, points, stock, status);
+    }
+
+    async function savePointGoods() {
+      const id = document.getElementById('pointGoodsId').value;
+      const payload = {
+        name: document.getElementById('pointGoodsName').value,
+        image: document.getElementById('pointGoodsImage').value,
+        points: parseInt(document.getElementById('pointGoodsPoints').value) || 0,
+        stock: parseInt(document.getElementById('pointGoodsStock').value) || 0,
+        status: parseInt(document.getElementById('pointGoodsStatus').value)
+      };
+      try {
+        const res = await fetch(`${API_BASE}/point-goods${id ? '/' + id : ''}`, {
+          method: id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.code === 0) {
+          closePointGoodsModal();
+          loadPointGoods();
+          alert('保存成功');
+        } else {
+          alert(data.message || '保存失败');
+        }
+      } catch (err) {
+        alert('保存失败');
+      }
+    }
+
+    async function deletePointGoods(id) {
+      if (!confirm('确定删除？')) return;
+      try {
+        const res = await fetch(`${API_BASE}/point-goods/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.code === 0) {
+          loadPointGoods();
+          alert('删除成功');
+        } else {
+          alert(data.message || '删除失败');
+        }
+      } catch (err) {
+        alert('删除失败');
+      }
+    }
+
+    function closePointGoodsModal() {
+      document.getElementById('pointGoodsModal').classList.remove('active');
+    }
+
+    async function loadAddresses() {
+      try {
+        const res = await fetch(`${API_BASE}/address/all/list`);
+        const data = await res.json();
+        const tbody = document.getElementById('addressesTable');
+        if (!data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无地址</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.data.map(a => `<tr>
+          <td>${a.id}</td>
+          <td>${a.user_nickname || '用户'+a.user_id}</td>
+          <td>${a.name}</td>
+          <td>${a.phone}</td>
+          <td>${a.region} ${a.detail}</td>
+          <td><span class="status-badge ${a.is_default === 1 ? 'active' : ''}">${a.is_default === 1 ? '默认' : ''}</span></td>
+        </tr>`).join('');
+      } catch (err) {
+        document.getElementById('addressesTable').innerHTML = '<tr><td colspan="6" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    async function loadConfig() {
+      try {
+        const res = await fetch(`${API_BASE}/config/all`);
+        const data = await res.json();
+        const config = data.data || {};
+        const configMap = {
+          farm_info: { name: '农场基础信息', desc: '联系方式和地址' },
+          member_discount: { name: '会员立减金额', desc: '订单完成时减免' },
+          freight: { name: '默认运费', desc: '每笔订单运费' }
+        };
+        document.getElementById('configList').innerHTML = Object.entries(config).map(([key, value]) => `<div class="config-item">
+          <div class="config-info"><h4>${configMap[key]?.name || key}</h4><p>${configMap[key]?.desc || ''}</p></div>
+          <div class="config-value">${value}</div>
+        </div>`).join('');
+      } catch (err) {
+        document.getElementById('configList').innerHTML = '<div class="empty-state">加载失败</div>';
+      }
+    }
+
+    async function loadCategory() {
+      try {
+        const res = await fetch(`${API_BASE}/category/all/list`);
+        const data = await res.json();
+        const tbody = document.getElementById('categoryTable');
+        if (!data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无分类</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.data.map(c => `<tr>
+          <td>${c.id}</td>
+          <td>${c.name}</td>
+          <td>${c.image ? '<img src="'+c.image+'" style="width:40px;height:40px;object-fit:cover;border-radius:4px">' : '-'}</td>
+          <td>${c.sort}</td>
+          <td><span class="status-badge ${c.status === 1 ? 'active' : ''}">${c.status === 1 ? '启用' : '禁用'}</span></td>
+          <td><div class="actions">
+            <button class="action-btn edit" onclick="editCategory(${c.id})"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+            <button class="action-btn delete" onclick="deleteCategory(${c.id})"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+          </div></td>
+        </tr>`).join('');
+      } catch (err) {
+        document.getElementById('categoryTable').innerHTML = '<tr><td colspan="6" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    let editingCategoryId = null;
+    function openCategoryModal(cat) {
+      editingCategoryId = cat?.id || null;
+      document.getElementById('categoryForm')?.remove();
+      const modal = document.createElement('div');
+      modal.id = 'categoryModal';
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `<div class="modal">
+        <div class="modal-header"><h3>${cat ? '编辑分类' : '添加分类'}</h3><button class="modal-close" onclick="closeCategoryModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+        <div class="modal-body"><div class="form-group"><label>分类名称</label><input type="text" id="catName" value="${cat?.name || ''}"></div>
+        <div class="form-group"><label>分类图标URL</label><input type="text" id="catImage" value="${cat?.image || ''}"></div>
+        <div class="form-group"><label>排序</label><input type="number" id="catSort" value="${cat?.sort || 0}"></div>
+        <div class="form-group"><label>状态</label><select id="catStatus"><option value="1" ${cat?.status === 1 ? 'selected' : ''}>启用</option><option value="0" ${cat?.status === 0 ? 'selected' : ''}>禁用</option></select></div>
+        <button class="btn-primary" onclick="saveCategory()">保存</button></div></div>`;
+      document.body.appendChild(modal);
+      modal.classList.add('active');
+      modal.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeCategoryModal(); });
+    }
+    function closeCategoryModal() { document.getElementById('categoryModal')?.remove(); }
+    async function saveCategory() {
+      const data = { name: document.getElementById('catName').value, image: document.getElementById('catImage').value, sort: document.getElementById('catSort').value, status: document.getElementById('catStatus').value };
+      if (!data.name) return alert('请输入分类名称');
+      try {
+        const url = editingCategoryId ? `${API_BASE}/category/${editingCategoryId}` : `${API_BASE}/category`;
+        const method = editingCategoryId ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        const result = await res.json();
+        if (result.code === 0) { closeCategoryModal(); loadCategory(); } else alert(result.message);
+      } catch (err) { alert('保存失败'); }
+    }
+    async function editCategory(id) {
+      const res = await fetch(`${API_BASE}/category/${id}`);
+      const data = await res.json();
+      if (data.code === 0) openCategoryModal(data.data);
+    }
+    async function deleteCategory(id) {
+      if (!confirm('确认删除？')) return;
+      try {
+        const res = await fetch(`${API_BASE}/category/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.code === 0) loadCategory();
+      } catch (err) { alert('删除失败'); }
+    }
+
+    async function loadBanner() {
+      try {
+        const res = await fetch(`${API_BASE}/banner/all/list`);
+        const data = await res.json();
+        const tbody = document.getElementById('bannerTable');
+        if (!data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无轮播图</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.data.map(b => `<tr>
+          <td>${b.id}</td>
+          <td>${b.title || '-'}</td>
+          <td>${b.image ? '<img src="'+b.image+'" style="width:80px;height:40px;object-fit:cover;border-radius:4px">' : '-'}</td>
+          <td>${b.sort}</td>
+          <td><span class="status-badge ${b.status === 1 ? 'active' : ''}">${b.status === 1 ? '启用' : '禁用'}</span></td>
+          <td><div class="actions">
+            <button class="action-btn edit" onclick="editBanner(${b.id})"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+            <button class="action-btn delete" onclick="deleteBanner(${b.id})"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+          </div></td>
+        </tr>`).join('');
+      } catch (err) {
+        document.getElementById('bannerTable').innerHTML = '<tr><td colspan="6" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    let editingBannerId = null;
+    function openBannerModal(banner) {
+      editingBannerId = banner?.id || null;
+      document.getElementById('bannerForm')?.remove();
+      const modal = document.createElement('div');
+      modal.id = 'bannerModal';
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `<div class="modal">
+        <div class="modal-header"><h3>${banner ? '编辑轮播图' : '添加轮播图'}</h3><button class="modal-close" onclick="closeBannerModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+        <div class="modal-body"><div class="form-group"><label>标题</label><input type="text" id="bannerTitle" value="${banner?.title || ''}"></div>
+        <div class="form-group"><label>图片</label><input type="file" id="bannerFile" accept="image/*" onchange="previewBannerImage(this)"><p id="bannerPreviewText" style="color:#666;font-size:12px;margin-top:5px;">${banner?.image ? '当前图片: ' + banner.image : '请选择图片'}</p><img id="bannerPreview" src="${banner?.image || ''}" style="max-width:200px;margin-top:10px;${banner?.image ? '' : 'display:none'}"></div>
+        <div class="form-group"><label>排序</label><input type="number" id="bannerSort" value="${banner?.sort || 0}"></div>
+        <div class="form-group"><label>状态</label><select id="bannerStatus"><option value="1" ${banner?.status === 1 ? 'selected' : ''}>启用</option><option value="0" ${banner?.status === 0 ? 'selected' : ''}>禁用</option></select></div>
+        <button class="btn-primary" onclick="saveBanner()">保存</button></div></div>`;
+      document.body.appendChild(modal);
+      modal.classList.add('active');
+      modal.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeBannerModal(); });
+    }
+    function closeBannerModal() { document.getElementById('bannerModal')?.remove(); }
+    function previewBannerImage(input) {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('bannerPreview').src = e.target.result;
+          document.getElementById('bannerPreview').style.display = 'block';
+          document.getElementById('bannerPreviewText').textContent = '预览: ' + file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    async function saveBanner() {
+      const title = document.getElementById('bannerTitle').value;
+      const sort = document.getElementById('bannerSort').value;
+      const status = document.getElementById('bannerStatus').value;
+      const fileInput = document.getElementById('bannerFile');
+      const file = fileInput.files[0];
+      try {
+        if (file) {
+          const formData = new FormData();
+          formData.append('title', title);
+          formData.append('sort', sort);
+          formData.append('status', status);
+          formData.append('image', file);
+          const url = editingBannerId ? `${API_BASE}/banner/${editingBannerId}` : `${API_BASE}/banner`;
+          const method = editingBannerId ? 'PUT' : 'POST';
+          const res = await fetch(url, { method, body: formData });
+          const result = await res.json();
+          if (result.code === 0) { closeBannerModal(); loadBanner(); } else alert(result.message);
+        } else {
+          const image = document.getElementById('bannerPreview').src;
+          if (!image) return alert('请选择图片');
+          const data = { title, image, sort, status };
+          const url = editingBannerId ? `${API_BASE}/banner/${editingBannerId}` : `${API_BASE}/banner`;
+          const method = editingBannerId ? 'PUT' : 'POST';
+          const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+          const result = await res.json();
+          if (result.code === 0) { closeBannerModal(); loadBanner(); } else alert(result.message);
+        }
+      } catch (err) { alert('保存失败'); }
+    }
+    async function editBanner(id) {
+      const res = await fetch(`${API_BASE}/banner/${id}`);
+      const data = await res.json();
+      if (data.code === 0) openBannerModal(data.data);
+    }
+    async function deleteBanner(id) {
+      if (!confirm('确认删除？')) return;
+      try {
+        const res = await fetch(`${API_BASE}/banner/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.code === 0) loadBanner();
+      } catch (err) { alert('删除失败'); }
+    }
+
+    let editingAdminId = null;
+    function openAdminModal(admin = null) {
+      editingAdminId = admin?.id || null;
+      const modal = document.createElement('div');
+      modal.id = 'adminModal';
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `<div class="modal">
+        <div class="modal-header"><h3>${admin ? '编辑管理员' : '添加管理员'}</h3><button class="modal-close" onclick="closeAdminModal()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div>
+        <div class="modal-body"><div class="form-group"><label>账号</label><input type="text" id="adminUsername" value="${admin?.username || ''}" ${admin ? 'readonly' : ''}></div>
+        <div class="form-group"><label>密码</label><input type="password" id="adminPassword" placeholder="${admin ? '留空则不修改' : '请输入密码'}"></div>
+        <div class="form-group"><label>昵称</label><input type="text" id="adminNickname" value="${admin?.nickname || ''}"></div>
+        <button class="btn-primary" onclick="saveAdmin()">保存</button></div></div>`;
+      document.body.appendChild(modal);
+      modal.classList.add('active');
+      modal.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeAdminModal(); });
+    }
+    function closeAdminModal() { document.getElementById('adminModal')?.remove(); }
+    async function saveAdmin() {
+      const data = { username: document.getElementById('adminUsername').value, password: document.getElementById('adminPassword').value, nickname: document.getElementById('adminNickname').value };
+      if (!data.username) return alert('请输入账号');
+      if (!editingAdminId && !data.password) return alert('请输入密码');
+      try {
+        const url = editingAdminId ? `${API_BASE}/admin/${editingAdminId}` : `${API_BASE}/admin`;
+        const method = editingAdminId ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        const result = await res.json();
+        if (result.code === 0) { closeAdminModal(); loadAdmin(); } else alert(result.message);
+      } catch (err) { alert('保存失败'); }
+    }
+    async function editAdmin(id) {
+      const res = await fetch(`${API_BASE}/admin/list`);
+      const data = await res.json();
+      if (data.code === 0) {
+        const admin = data.data.find(a => a.id === id);
+        if (admin) openAdminModal(admin);
+      }
+    }
+    async function deleteAdmin(id) {
+      if (!confirm('确认删除？')) return;
+      try {
+        const res = await fetch(`${API_BASE}/admin/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.code === 0) loadAdmin();
+      } catch (err) { alert('删除失败'); }
+    }
+    async function loadPointExchange() {
+      try {
+        const res = await fetch(`${API_BASE}/point-exchange/all/list`);
+        const data = await res.json();
+        const tbody = document.getElementById('pointExchangeTable');
+        if (data.code !== 0 || !data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无兑换订单</td></tr>';
+          return;
+        }
+        const statusMap = { 1: '待发货', 2: '已发货', 3: '已完成', 4: '已取消' };
+        tbody.innerHTML = data.data.map(o => `<tr>
+          <td>${o.id}</td>
+          <td>${o.order_no}</td>
+          <td>${o.user_nickname || o.user_phone || o.user_id}</td>
+          <td>${o.goods_name}</td>
+          <td>${o.points}</td>
+          <td>${o.num}</td>
+          <td><span class="status-badge ${o.status === 3 ? 'active' : ''}">${statusMap[o.status] || o.status}</span></td>
+          <td>${new Date(o.create_time).toLocaleString()}</td>
+        </tr>`).join('');
+      } catch (err) { console.error(err); }
+    }
+    async function loadAdmin() {
+      try {
+        const res = await fetch(`${API_BASE}/admin/list`);
+        const data = await res.json();
+        const tbody = document.getElementById('adminTable');
+        if (data.code !== 0 || !data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="empty-state">暂无管理员</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.data.map(a => `<tr>
+          <td>${a.id}</td>
+          <td>${a.username}</td>
+          <td>${a.nickname}</td>
+          <td>${new Date(a.create_time).toLocaleString()}</td>
+          <td><div class="actions">
+            <button class="btn-edit" onclick="editAdmin(${a.id})">编辑</button>
+            <button class="btn-delete" onclick="deleteAdmin(${a.id})">删除</button>
+          </div></td>
+        </tr>`).join('');
+      } catch (err) { console.error(err); }
+    }
+
+    async function loadSku() {
+      try {
+        const [prodRes, skuRes] = await Promise.all([
+          fetch(`${API_BASE}/product`),
+          fetch(`${API_BASE}/product-sku/all/list`)
+        ]);
+        const prodData = await prodRes.json();
+        const skuData = await skuRes.json();
+        const products = prodData.data || [];
+        const skuList = skuData.data || [];
+        const productMap = {};
+        products.forEach(p => productMap[p.id] = p.name);
+        const tbody = document.getElementById('skuTable');
+        if (skuList.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">暂无规格</td></tr>';
+          return;
+        }
+        tbody.innerHTML = skuList.map(s => `<tr>
+          <td>${s.id}</td>
+          <td>${s.product_id} - ${productMap[s.product_id] || '-'}</td>
+          <td>${s.sku_name}</td>
+          <td>¥${s.price}</td>
+          <td>${s.stock}</td>
+          <td><span class="status-badge ${s.status === 1 ? 'active' : ''}">${s.status === 1 ? '启用' : '禁用'}</span></td>
+          <td><div class="actions">
+            <button class="action-btn edit" onclick="editSku(${s.id})"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+            <button class="action-btn delete" onclick="deleteSku(${s.id})"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+          </div></td>
+        </tr>`).join('');
+      } catch (err) {
+        document.getElementById('skuTable').innerHTML = '<tr><td colspan="7" class="empty-state">加载失败</td></tr>';
+      }
+    }
+
+    let editingSkuId = null;
+
+    function openSkuModal(sku = null) {
+      editingSkuId = sku?.id || null;
+      document.getElementById('skuModalTitle').textContent = sku ? '编辑规格' : '添加规格';
+      document.getElementById('skuId').value = sku?.id || '';
+      loadProductSelect(sku?.product_id);
+      document.getElementById('skuName').value = sku?.sku_name || '';
+      document.getElementById('skuPrice').value = sku?.price || '';
+      document.getElementById('skuStock').value = sku?.stock || 0;
+      document.getElementById('skuStatus').value = sku?.status || 1;
+      document.getElementById('skuModal').classList.add('active');
+    }
+
+    async function loadProductSelect(selectedId) {
+      try {
+        const res = await fetch(`${API_BASE}/product`);
+        const data = await res.json();
+        const select = document.getElementById('skuProduct');
+        select.innerHTML = '<option value="">请选择商品</option>';
+        (data.data || []).forEach(p => {
+          select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+        });
+        if (selectedId) select.value = selectedId;
+      } catch (err) {}
+    }
+
+    function closeSkuModal() {
+      document.getElementById('skuModal').classList.remove('active');
+    }
+
+    async function editSku(id) {
+      try {
+        const res = await fetch(`${API_BASE}/product-sku/${id}`);
+        const data = await res.json();
+        if (data.code === 0) openSkuModal(data.data);
+      } catch (err) { alert('加载失败'); }
+    }
+
+    async function editSkuFromDropdown(id) {
+      await editSku(id);
+    }
+
+    async function deleteSkuFromDropdown(id, productId) {
+      if (!confirm('确定删除该规格？')) return;
+      try {
+        const res = await fetch(`${API_BASE}/product-sku/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.code === 0) {
+          loadSkuList(productId);
+          loadSku();
+        } else {
+          alert(data.message || '删除失败');
+        }
+      } catch (err) {
+        alert('删除失败');
+      }
+    }
+
+    function openSkuModalForProduct(productId) {
+      editingSkuId = null;
+      document.getElementById('skuModalTitle').textContent = '添加规格';
+      document.getElementById('skuId').value = '';
+      document.getElementById('skuName').value = '';
+      document.getElementById('skuPrice').value = '';
+      document.getElementById('skuStock').value = 0;
+      document.getElementById('skuStatus').value = 1;
+      loadProductSelect(productId);
+      document.getElementById('skuModal').classList.add('active');
+    }
+
+    async function saveSku() {
+      const id = document.getElementById('skuId').value;
+      const payload = {
+        product_id: parseInt(document.getElementById('skuProduct').value),
+        sku_name: document.getElementById('skuName').value,
+        price: parseFloat(document.getElementById('skuPrice').value),
+        stock: parseInt(document.getElementById('skuStock').value) || 0,
+        status: parseInt(document.getElementById('skuStatus').value)
+      };
+      if (!payload.product_id || !payload.sku_name || !payload.price) {
+        alert('请填写完整信息');
+        return;
+      }
+      try {
+        const url = id ? `${API_BASE}/product-sku/${id}` : `${API_BASE}/product-sku`;
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const data = await res.json();
+        if (data.code === 0) {
+          closeSkuModal();
+          loadSku();
+          alert('保存成功');
+        } else {
+          alert(data.message || '保存失败');
+        }
+      } catch (err) { alert('保存失败'); }
+    }
+
+    async function deleteSku(id) {
+      if (!confirm('确定删除?')) return;
+      try {
+        const res = await fetch(`${API_BASE}/product-sku/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.code === 0) loadSku();
+      } catch (err) { alert('删除失败'); }
+    }
+
+    async function loadCart() {
+      try {
+        const res = await fetch(`${API_BASE}/cart/all/list`);
+        const data = await res.json();
+        const tbody = document.getElementById('cartTable');
+        if (!data.data || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" class="empty-state">暂无购物车数据</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.data.map(c => `<tr>
+          <td>${c.id}</td>
+          <td>${c.user_nickname || '用户'+c.user_id}</td>
+          <td>${c.product_name || '商品'+c.product_id}</td>
+          <td>${c.sku_name || '-'}</td>
+          <td>${c.num}</td>
+          <td class="price">¥${c.product_price || 0}</td>
+          <td><span class="status-badge ${c.is_checked === 1 ? 'active' : ''}">${c.is_checked === 1 ? '已选' : '未选'}</span></td>
+          <td>${new Date(c.create_time).toLocaleDateString()}</td>
+          <td><button class="action-btn delete" onclick="deleteCart(${c.id})"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></td>
+        </tr>`).join('');
+      } catch (err) {
+        document.getElementById('cartTable').innerHTML = '<tr><td colspan="9" class="empty-state">加载失败</td></tr>';
+      }
+    }
+    async function deleteCart(id) {
+      if (!confirm('确认删除？')) return;
+      try {
+        const res = await fetch(`${API_BASE}/cart/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.code === 0) loadCart();
+      } catch (err) { alert('删除失败'); }
+    }
+
+    document.getElementById('productModal').addEventListener('click', e => {
+      if (e.target.classList.contains('modal-overlay')) closeProductModal();
+    });
+    document.getElementById('orderModal').addEventListener('click', e => {
+      if (e.target.classList.contains('modal-overlay')) closeOrderModal();
+    });
+
+    loadDashboard();
+  </script>
+</body>
+</html>

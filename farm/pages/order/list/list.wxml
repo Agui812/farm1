@@ -1,0 +1,115 @@
+<view class="order-list-page">
+  <view class="page-header">
+    <view class="header-content">
+      <view class="header-leaf left"></view>
+      <view class="header-title">我的订单</view>
+      <view class="header-leaf right"></view>
+    </view>
+  </view>
+
+  <van-tabs active="{{ activeTab }}" bind:change="onTabChange" sticky custom-class="farm-tabs">
+    <van-tab title="全部" name="all"></van-tab>
+    <van-tab title="待付款" name="pending"></van-tab>
+    <van-tab title="待发货" name="paid"></van-tab>
+    <van-tab title="待收货" name="shipped"></van-tab>
+    <van-tab title="已完成" name="completed"></van-tab>
+  </van-tabs>
+
+  <view class="order-list">
+    <view class="loading-wrap" wx:if="{{loading}}">
+      <view class="loading-inner">
+        <van-loading size="48rpx" type="spinner">加载中...</van-loading>
+      </view>
+    </view>
+
+    <view class="order-empty" wx:if="{{ !loading && filteredOrders.length === 0 }}">
+      <view class="empty-illustration">
+        <view class="empty-icon">
+          <van-icon name="orders-o" size="96rpx" color="#B9A385"/>
+        </view>
+        <view class="empty-basket">
+          <view class="basket-item" wx:for="123" wx:key="index"></view>
+        </view>
+      </view>
+      <view class="empty-text">
+        <text class="empty-title">暂无订单</text>
+        <text class="empty-desc">快去选购心仪的农产品吧</text>
+      </view>
+      <view class="empty-action" bindtap="goHome">
+        <van-button size="small" round type="default" custom-class="btn-ghost">去逛逛</van-button>
+      </view>
+    </view>
+
+    <view class="order-card status-{{item.order_status}}" wx:for="{{ filteredOrders }}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="card-header">
+        <view class="shop-info">
+          <view class="shop-icon">
+            <van-icon name="shop-o" size="32rpx" color="#7CBD89"/>
+          </view>
+          <text class="shop-name">艾萌农场</text>
+        </view>
+        <view class="status-badge status-{{item.order_status}}">
+          <view class="status-dot"></view>
+          <text>{{item.statusText}}</text>
+        </view>
+      </view>
+
+      <view class="card-body">
+        <view class="goods-scroll">
+          <view class="goods-item" wx:for="{{item.items}}" wx:for-item="goods" wx:key="index">
+            <view class="goods-image-wrap">
+              <van-image width="160rpx" height="160rpx" src="{{goods.image}}" fit="cover" radius="16rpx"/>
+              <view class="goods-tag" wx:if="{{index === 0}}">精选</view>
+            </view>
+            <view class="goods-detail">
+              <view class="goods-name">{{goods.name}}</view>
+              <view class="goods-spec-text" wx:if="{{goods.spec}}">{{goods.spec}}</view>
+              <view class="goods-row">
+                <text class="goods-price">¥{{goods.price}}</text>
+                <text class="goods-num">x{{goods.num}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="card-footer">
+        <view class="footer-left">
+          <text class="order-time">{{item.create_time}}</text>
+        </view>
+        <view class="footer-right">
+          <text class="total-label" wx:if="{{!item.is_point_exchange}}">合计</text>
+          <text class="total-label" wx:if="{{item.is_point_exchange}}">消耗积分</text>
+          <text class="total-price" wx:if="{{!item.is_point_exchange}}">¥{{item.total_price}}</text>
+          <text class="total-price points-price" wx:if="{{item.is_point_exchange}}">{{item.points}} 积分</text>
+          <text class="total-count">共{{item.items.length}}件</text>
+        </view>
+      </view>
+
+      <view class="card-logistics" wx:if="{{!item.is_point_exchange && (item.order_status === '3' || item.order_status === '待收货')}} && item.logistics">
+        <view class="logistics-preview">
+          <van-icon name="logistics" size="28rpx" color="#7CBD89"/>
+          <text class="logistics-company">{{item.logistics.company}}</text>
+          <text class="logistics-no">{{item.logistics.trackingNo}}</text>
+        </view>
+        <view class="logistics-latest" wx:if="{{item.logistics.traces && item.logistics.traces.length > 0}}">
+          <text>{{item.logistics.traces[0].desc}}</text>
+        </view>
+      </view>
+
+      <view class="card-actions">
+        <van-button wx:if="{{!item.is_point_exchange && (item.order_status === '1' || item.order_status === '待付款')}}" size="small" round custom-class="btn-primary" catchtap="preventTap" data-id="{{item.id}}" bindclick="payOrder">
+          <van-icon name="cash-o" size="28rpx" style="margin-right: 8rpx"/>去付款
+        </van-button>
+        <van-button wx:if="{{item.is_point_exchange && item.order_status === '2'}}" size="small" round custom-class="btn-success" catchtap="preventTap" data-id="{{item.id}}" bindclick="receiveOrder">
+          <van-icon name="logistics" size="28rpx" style="margin-right: 8rpx"/>确认收货
+        </van-button>
+        <van-button wx:if="{{!item.is_point_exchange && (item.order_status === '3' || item.order_status === '待收货')}}" size="small" round custom-class="btn-success" catchtap="preventTap" data-id="{{item.id}}" bindclick="receiveOrder">
+          <van-icon name="logistics" size="28rpx" style="margin-right: 8rpx"/>确认收货
+        </van-button>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>

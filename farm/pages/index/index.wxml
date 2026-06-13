@@ -1,0 +1,75 @@
+<view class="index-page">
+  <view class="banner-section">
+    <swiper indicator-dots autoplay interval="3000" circular class="banner-swiper" wx:if="{{banners.length > 0}}">
+      <block wx:for="{{banners}}" wx:key="id">
+        <swiper-item>
+          <van-image width="100%" height="400rpx" src="{{item.image}}" fit="cover" radius="0"/>
+        </swiper-item>
+      </block>
+    </swiper>
+    <view class="banner-placeholder" wx:else>
+      <van-image width="100%" height="400rpx" src="https://img.yzcdn.cn/vant/cat.jpeg" fit="cover" radius="0"/>
+    </view>
+  </view>
+
+  <view class="slogan-section">
+    <view class="slogan-text">农户直供 · 新鲜放心</view>
+    <view class="slogan-sub">源自东北黑土地，品质大米直送到家</view>
+  </view>
+
+  <view class="recommend-section">
+    <view class="section-header">
+      <view class="section-title">主推商品</view>
+      <view class="section-more" bindtap="goToGoodsList" data-category="all">
+        查看全部
+        <van-icon name="arrow" size="32rpx"/>
+      </view>
+    </view>
+    <view class="goods-grid">
+      <view class="goods-card card" wx:for="{{recommendGoods}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <van-image width="100%" height="280rpx" src="{{item.image}}" fit="cover" radius="16rpx 16rpx 0 0"/>
+        <view class="goods-info">
+          <view class="goods-name">{{item.name}}</view>
+          <view class="goods-price">
+            <text class="price-current">¥{{item.min_price || item.price}}</text>
+            <text class="price-original" wx:if="{{item.original_price}}">¥{{item.original_price}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="farm-section card">
+    <view class="farm-header">
+      <van-image width="80rpx" height="80rpx" round src="https://img.yzcdn.cn/vant/leaf.jpg" fit="cover"/>
+      <view class="farm-title">
+        <view class="farm-name">艾萌农场</view>
+        <view class="farm-desc">东北优质稻米产地</view>
+      </view>
+    </view>
+    <view class="farm-desc-full">
+      艾萌农场坐落于黑龙江省五常市，拥有百年水稻种植历史。我们坚持传统农耕方式，人工收割，自然晾晒，确保每一粒大米都保留原始的香甜与营养。从田间到餐桌，为您提供安全、健康、好吃的新鲜大米。
+    </view>
+    <view class="farm-tags">
+      <van-tag type="success" plain>农户直供</van-tag>
+      <van-tag type="success" plain>自然种植</van-tag>
+      <van-tag type="success" plain>新鲜直达</van-tag>
+    </view>
+  </view>
+
+  <view class="contact-section card" style="
+    margin-bottom: 40px;
+">
+    <view class="contact-item" bindtap="callPhone">
+      <van-icon name="phone-o" size="48rpx" color="#7CBD89"/>
+      <text>一键拨号</text>
+    </view>
+    <view class="contact-divider"></view>
+    <view class="contact-item" bindtap="copyWechat">
+      <van-icon name="chat-o" size="48rpx" color="#7CBD89"/>
+      <text>一键微信</text>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>
